@@ -109,6 +109,26 @@ Madre:
 
 <script>
 function calcular() {
+// --- Validación de albinismos incompatibles ---
+const albinismos = [
+  { nombre: "Tremper", padre: padre_tremper.value, madre: madre_tremper.value },
+  { nombre: "Bell", padre: padre_bell.value, madre: madre_bell.value },
+  { nombre: "Rainwater", padre: padre_rainwater.value, madre: madre_rainwater.value }
+];
+
+const activos = albinismos.filter(a =>
+  a.padre !== "normal" || a.madre !== "normal"
+);
+
+if (activos.length > 1) {
+  document.getElementById("resultado").textContent =
+    "⚠️ Cruce inválido:\n" +
+    "Los albinismos NO se combinan entre sí.\n\n" +
+    "Detectados:\n" +
+    activos.map(a => "- " + a.nombre).join("\n");
+  return;
+}
+  
   let t = "";
 
   function bloque(nombre, res, padre, madre) {
