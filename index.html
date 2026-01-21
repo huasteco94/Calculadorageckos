@@ -2,248 +2,169 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Calculadora Genética – Gecko Leopardo</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora Genética Gecko Leopardo</title>
 <style>
-body {
-  font-family: Arial, sans-serif;
-  background:#f4f4f4;
-  padding:15px;
-}
-h1,h2,h3 { margin-top:25px; }
-.section {
-  background:#fff;
-  padding:15px;
-  border-radius:8px;
-  margin-bottom:20px;
-}
-.gene {
-  display:grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap:10px;
-  align-items:center;
-  margin-bottom:8px;
-}
-.gene strong { font-size:14px; }
-label { font-size:11px; color:#555; }
-select { width:100%; }
-button {
-  width:100%;
-  padding:12px;
-  font-size:16px;
-  margin-top:10px;
-}
-.result {
-  background:#eee;
-  padding:8px;
-  border-radius:6px;
-  margin-bottom:6px;
-}
-.small { font-size:12px; color:#555; }
+body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; padding:15px; }
+h2,h3 { margin-top:20px; }
+.section { background:#fff; padding:15px; margin-bottom:15px; border-radius:8px; }
+label { display:block; margin:6px 0; }
+select { width:100%; padding:6px; margin-bottom:10px; }
+.result-block { margin-top:10px; }
+.combo { background:#e8f7e8; padding:10px; border-radius:6px; margin-bottom:8px; }
+.route { background:#fff6e5; padding:10px; border-radius:6px; margin-bottom:8px; }
+.warn { background:#fdeaea; padding:10px; border-radius:6px; }
+.small { font-size:0.9em; color:#555; }
 </style>
 </head>
-
 <body>
 
-<h1>Calculadora Genética – Gecko Leopardo</h1>
-
-<!-- =================== SEXO =================== -->
-<div class="section">
-<h2>Ejemplares</h2>
-<div class="gene">
-  <strong>Sexo</strong>
-  <select id="sexo_p">
-    <option value="">Macho</option>
-  </select>
-  <select id="sexo_m">
-    <option value="">Hembra</option>
-  </select>
-</div>
-</div>
-
-<!-- =================== RECESIVOS =================== -->
-<div class="section">
-<h2>Genes Recesivos</h2>
-
-<div class="gene"><strong>Tremper Albino</strong>
-<select id="tremper_p"><option value=""></option><option>het</option><option>visual</option></select>
-<select id="tremper_m"><option value=""></option><option>het</option><option>visual</option></select></div>
-
-<div class="gene"><strong>Bell Albino</strong>
-<select id="bell_p"><option value=""></option><option>het</option><option>visual</option></select>
-<select id="bell_m"><option value=""></option><option>het</option><option>visual</option></select></div>
-
-<div class="gene"><strong>Rainwater Albino</strong>
-<select id="rain_p"><option value=""></option><option>het</option><option>visual</option></select>
-<select id="rain_m"><option value=""></option><option>het</option><option>visual</option></select></div>
-
-<div class="gene"><strong>Eclipse</strong>
-<select id="eclipse_p"><option value=""></option><option>het</option><option>visual</option></select>
-<select id="eclipse_m"><option value=""></option><option>het</option><option>visual</option></select></div>
-
-<div class="gene"><strong>Blizzard</strong>
-<select id="blizzard_p"><option value=""></option><option>het</option><option>visual</option></select>
-<select id="blizzard_m"><option value=""></option><option>het</option><option>visual</option></select></div>
-
-<div class="gene"><strong>Murphy Patternless</strong>
-<select id="murphy_p"><option value=""></option><option>het</option><option>visual</option></select>
-<select id="murphy_m"><option value=""></option><option>het</option><option>visual</option></select></div>
-</div>
-
-<!-- =================== CODOMINANTES =================== -->
-<div class="section">
-<h2>Genes Codominantes</h2>
-
-<div class="gene"><strong>Mack Snow</strong>
-<select id="mack_p"><option value=""></option><option>presente</option><option>super</option></select>
-<select id="mack_m"><option value=""></option><option>presente</option><option>super</option></select></div>
-
-<div class="gene"><strong>Giant</strong>
-<select id="giant_p"><option value=""></option><option>giant</option><option>super giant</option></select>
-<select id="giant_m"><option value=""></option><option>giant</option><option>super giant</option></select></div>
-</div>
-
-<!-- =================== DOMINANTES =================== -->
-<div class="section">
-<h2>Genes Dominantes</h2>
-
-<div class="gene"><strong>Enigma</strong>
-<select id="enigma_p"><option value=""></option><option>presente</option></select>
-<select id="enigma_m"><option value=""></option><option>presente</option></select></div>
-
-<div class="gene"><strong>White & Yellow</strong>
-<select id="wy_p"><option value=""></option><option>presente</option></select>
-<select id="wy_m"><option value=""></option><option>presente</option></select></div>
-</div>
-
-<!-- =================== POLIGÉNICOS =================== -->
-<div class="section">
-<h2>Líneas Poligénicas (informativas)</h2>
-
-<div class="gene"><strong>Mandarin / Tangerine</strong>
-<select id="mandarin_p"><option value=""></option><option>presente</option></select>
-<select id="mandarin_m"><option value=""></option><option>presente</option></select></div>
-
-<div class="gene"><strong>Blood Line</strong>
-<select id="blood_p"><option value=""></option><option>presente</option></select>
-<select id="blood_m"><option value=""></option><option>presente</option></select></div>
-
-<div class="gene"><strong>Tornado</strong>
-<select id="tornado_p"><option value=""></option><option>presente</option></select>
-<select id="tornado_m"><option value=""></option><option>presente</option></select></div>
-</div>
-
-<button onclick="calcular()">Calcular Cruce</button>
+<h2>Calculadora Genética – Gecko Leopardo</h2>
 
 <div class="section">
-<h2>Resultados</h2>
-<div id="resultados"></div>
-
-<h2>Combos</h2>
-<div id="combos"></div>
-
-<h2>Líneas Poligénicas Detectadas</h2>
-<div id="poly"></div>
+<h3>Padre</h3>
+<div id="father"></div>
+<h3>Madre</h3>
+<div id="mother"></div>
+<button onclick="calculate()">Calcular</button>
 </div>
+
+<div id="output"></div>
 
 <script>
-// ================= UTILIDADES =================
-function frac(p){
-  return p===100?"4/4":p===75?"3/4":p===50?"2/4":p===25?"1/4":"";
-}
+// ===================== DEFINICIÓN DE GENES =====================
+const recessives = ["Tremper Albino","Bell Albino","Rainwater Albino","Eclipse","Blizzard","Murphy Patternless"];
+const codominants = ["Mack Snow","Giant"];
+const dominants = ["Enigma","White & Yellow"];
+const polygenic = ["Mandarin / Tangerine","Blood","Blood Inferno","Blood Electric","Tornado"];
 
-function recCalc(p,m){
-  if(p==="visual" && m==="visual") return {v:100};
-  if((p==="visual"&&m==="het")||(p==="het"&&m==="visual")) return {v:50,h:50};
-  if(p==="het"&&m==="het") return {v:25,h:50};
-  if((p==="visual"&&m==="")||(p===""&&m==="visual")) return {h:100};
-  if((p==="het"&&m==="")||(p===""&&m==="het")) return {h:50};
-  return {};
-}
-
-// ================= COMBOS =================
-const combosDef = [
- {nombre:"RAPTOR", req:["tremper","eclipse","murphy"]},
- {nombre:"Diablo Blanco", req:["tremper","blizzard","eclipse"]},
- {nombre:"Radar", req:["bell","eclipse"]},
- {nombre:"Typhoon", req:["rain","eclipse"]},
- {nombre:"Universe", req:["supermack","eclipse","wy"]},
- {nombre:"Nova", req:["tremper","eclipse","enigma"]}
+const combos = [
+ {name:"RAPTOR", genes:["Tremper Albino","Eclipse","Murphy Patternless"], alias:"Tremper Eclipse Murphy"},
+ {name:"Diablo Blanco", genes:["Tremper Albino","Blizzard","Eclipse"]},
+ {name:"Radar", genes:["Bell Albino","Eclipse"]},
+ {name:"Typhoon", genes:["Rainwater Albino","Eclipse"]},
+ {name:"Universe", genes:["Mack Snow","Eclipse","White & Yellow"], super:true},
+ {name:"Nova", genes:["Tremper Albino","Eclipse","Enigma"]}
 ];
 
-function calcular(){
-  const genesRec = ["tremper","bell","rain","eclipse","blizzard","murphy"];
-  const genesPresentes = {};
-  const resDiv = document.getElementById("resultados");
-  const comboDiv = document.getElementById("combos");
-  const polyDiv = document.getElementById("poly");
+// ===================== UI =====================
+function geneSelect(type, gene, parent){
+ let opts = ["","het","visual"];
+ if(type==="codom") opts = ["","presente","super"];
+ if(type==="dom") opts = ["","presente"];
+ if(type==="poly") opts = ["","presente"];
+ return `
+ <label>${gene}
+ <select id="${parent}_${gene}">
+ ${opts.map(o=>`<option value="${o}">${o}</option>`).join("")}
+ </select></label>`;
+}
 
-  resDiv.innerHTML=""; comboDiv.innerHTML=""; polyDiv.innerHTML="";
+function buildUI(){
+ ["father","mother"].forEach(p=>{
+  let div=document.getElementById(p);
+  recessives.forEach(g=>div.innerHTML+=geneSelect("rec",g,p));
+  codominants.forEach(g=>div.innerHTML+=geneSelect("codom",g,p));
+  dominants.forEach(g=>div.innerHTML+=geneSelect("dom",g,p));
+  polygenic.forEach(g=>div.innerHTML+=geneSelect("poly",g,p));
+ });
+}
+buildUI();
 
-  // ===== RECESIVOS =====
-  genesRec.forEach(g=>{
-    const p=document.getElementById(g+"_p").value;
-    const m=document.getElementById(g+"_m").value;
-    const r=recCalc(p,m);
-    if(Object.keys(r).length){
-      let txt="";
-      if(r.v){ txt+=`• ${frac(r.v)} Visual (${r.v}%)<br>`; genesPresentes[g]=r.v; }
-      if(r.h){ txt+=`• ${frac(r.h)} Het (${r.h}%)<br>`; }
-      resDiv.innerHTML+=`<div class="result"><b>${g.toUpperCase()}</b><br>${txt}</div>`;
-    }
-  });
+// ===================== CÁLCULO =====================
+function calculate(){
+ let out=document.getElementById("output");
+ out.innerHTML="";
+ let results={rec:{},cod:{},dom:{},poly:[]};
 
-  // ===== CODOMINANTES =====
-  if(mack_p.value||mack_m.value){
-    if(mack_p.value==="super"||mack_m.value==="super"){
-      resDiv.innerHTML+=`<div class="result"><b>MACK SNOW</b><br>• Super presente</div>`;
-      genesPresentes.supermack=100;
-    }else{
-      resDiv.innerHTML+=`<div class="result"><b>MACK SNOW</b><br>• Presente</div>`;
-      genesPresentes.mack=50;
-    }
+ function get(p,g){ return document.getElementById(p+"_"+g).value; }
+
+ recessives.forEach(g=>{
+  let f=get("father",g), m=get("mother",g);
+  let res=[];
+  if(f==="visual"&&m==="visual") res.push(["Visual",4]);
+  else if((f==="visual"&&m==="het")||(m==="visual"&&f==="het")) res.push(["Visual",2],["Het",2]);
+  else if(f==="het"&&m==="het") res.push(["Visual",1],["Het",2]);
+  else if((f==="visual"&&m==="")||(m==="visual"&&f==="")) res.push(["Het",4]);
+  else if((f==="het"&&m==="")||(m==="het"&&f==="")) res.push(["Het",2]);
+  if(res.length) results.rec[g]=res;
+ });
+
+ codominants.forEach(g=>{
+  let f=get("father",g), m=get("mother",g);
+  let res=[];
+  if(f==="presente"&&m==="presente") res.push(["Super",1],["Presente",2]);
+  else if((f==="presente"&&m==="")||(m==="presente"&&f==="")) res.push(["Presente",2]);
+  else if((f==="super"&&m==="")||(m==="super"&&f==="")) res.push(["Presente",4]);
+  else if((f==="super"&&m==="presente")||(m==="super"&&f==="presente")) res.push(["Super",2],["Presente",2]);
+  else if(f==="super"&&m==="super") res.push(["Super",4]);
+  if(res.length) results.cod[g]=res;
+ });
+
+ dominants.forEach(g=>{
+  let f=get("father",g), m=get("mother",g);
+  let res=[];
+  if(f==="presente"&&m==="presente") res.push(["Presente",3]);
+  else if((f==="presente"&&m==="")||(m==="presente"&&f==="")) res.push(["Presente",2]);
+  if(res.length) results.dom[g]=res;
+ });
+
+ polygenic.forEach(g=>{
+  if(get("father",g)==="presente"||get("mother",g)==="presente") results.poly.push(g);
+ });
+
+ render(results);
+}
+
+// ===================== RENDER =====================
+function render(r){
+ let o=document.getElementById("output");
+
+ // Resumen
+ let geneCount=Object.keys(r.rec).length+Object.keys(r.cod).length+Object.keys(r.dom).length;
+ o.innerHTML+=`<div class="section"><b>Resumen</b><br>
+ Genes activos: ${geneCount}<br>
+ Combos posibles: ${combos.length}
+ </div>`;
+
+ // Resultados
+ function block(title,data){
+  let html="";
+  for(let g in data){
+   html+=`<b>${g}</b><br>`;
+   data[g].forEach(x=>{
+    html+=`• ${x[1]}/4 ${x[0]} (${x[1]*25}%)<br>`;
+   });
+   html+="<br>";
   }
+  if(html) o.innerHTML+=`<div class="section"><h3>${title}</h3>${html}</div>`;
+ }
 
-  if(giant_p.value||giant_m.value){
-    const gtxt = (giant_p.value==="super giant"||giant_m.value==="super giant")
-      ?"• Super Giant"
-      :"• Giant";
-    resDiv.innerHTML+=`<div class="result"><b>GIANT</b><br>${gtxt}</div>`;
+ block("Recesivos",r.rec);
+ block("Codominantes",r.cod);
+ block("Dominantes",r.dom);
+
+ // Combos y rutas
+ let comboHTML="", routeHTML="";
+ combos.forEach(c=>{
+  let have=c.genes.filter(g=>r.rec[g]||r.cod[g]||r.dom[g]);
+  if(have.length===c.genes.length){
+   comboHTML+=`<div class="combo">✅ ${c.name}<br>Componentes:<br>${c.genes.join("<br>")}</div>`;
+  } else if(have.length>=1){
+   let missing=c.genes.filter(g=>!have.includes(g));
+   routeHTML+=`<div class="route">➜ Ruta a ${c.name}<br>Faltan:<br>${missing.join("<br>")}</div>`;
   }
+ });
 
-  // ===== DOMINANTES =====
-  if(enigma_p.value||enigma_m.value){
-    resDiv.innerHTML+=`<div class="result"><b>ENIGMA</b><br>• Presente</div>`;
-    genesPresentes.enigma=50;
-  }
-  if(wy_p.value||wy_m.value){
-    resDiv.innerHTML+=`<div class="result"><b>WHITE & YELLOW</b><br>• Presente</div>`;
-    genesPresentes.wy=50;
-  }
+ if(comboHTML) o.innerHTML+=`<div class="section"><h3>Combos logrados</h3>${comboHTML}</div>`;
+ if(routeHTML) o.innerHTML+=`<div class="section"><h3>Rutas a combos</h3>${routeHTML}</div>`;
 
-  // ===== COMBOS =====
-  combosDef.forEach(cb=>{
-    let ok=true,prob=1,faltan=[];
-    cb.req.forEach(r=>{
-      if(!genesPresentes[r]){ok=false;faltan.push(r);}
-      else prob*=genesPresentes[r]/100;
-    });
-    if(ok){
-      comboDiv.innerHTML+=`<div class="result">✔ <b>${cb.nombre}</b> – ${frac(prob*100)} (${Math.round(prob*100)}%)</div>`;
-    }else{
-      comboDiv.innerHTML+=`<div class="result">➜ Ruta a <b>${cb.nombre}</b> (faltan: ${faltan.join(", ")})</div>`;
-    }
-  });
-
-  // ===== POLIGÉNICOS =====
-  [["mandarin","Mandarin"],["blood","Blood"],["tornado","Tornado"]].forEach(p=>{
-    if(document.getElementById(p[0]+"_p").value || document.getElementById(p[0]+"_m").value){
-      polyDiv.innerHTML+=`<div class="result">🟠 ${p[1]} presente – influencia estética (no medible)</div>`;
-    }
-  });
+ // Poligénicos
+ if(r.poly.length){
+  o.innerHTML+=`<div class="section"><h3>Líneas poligénicas</h3>${r.poly.join("<br>")}
+  <div class="small">No influyen en porcentajes genéticos</div></div>`;
+ }
 }
 </script>
-
 </body>
 </html>
