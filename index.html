@@ -5,140 +5,106 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calculadora Genética Gecko Leopardo</title>
 <style>
-body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; padding:15px; }
-h2,h3,h4 { margin-top:15px; }
-.section { background:#fff; padding:15px; margin-bottom:15px; border-radius:8px; }
-.gene-box { border-bottom:1px solid #ddd; padding:10px 0; }
-.row { display:flex; gap:10px; }
-.col { flex:1; }
-select { width:100%; padding:6px; }
-.result-block { margin-top:10px; }
-.combo { background:#e8f7e8; padding:10px; border-radius:6px; margin-bottom:8px; }
-.route { background:#fff6e5; padding:10px; border-radius:6px; margin-bottom:8px; }
-.warn { background:#fdeaea; padding:10px; border-radius:6px; }
-.small { font-size:0.9em; color:#555; }
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { text-align: center; }
+    .section { margin-bottom: 20px; }
+    .gene-row { display: flex; align-items: center; margin-bottom: 6px; }
+    .gene-row label { width: 200px; }
+    select { margin-right: 10px; }
+    #results div { margin-bottom: 8px; }
 </style>
 </head>
 <body>
 
-<h2>Calculadora Genética – Gecko Leopardo</h2>
+<h1>Calculadora Genética – Gecko Leopardo</h1>
 
 <div class="section">
-<h3>Selección genética</h3>
-<div id="genes"></div>
-<button onclick="calculate()">Calcular</button>
+    <h2>Genes Recesivos</h2>
+    <div id="recesivos">
+        <div class="gene-row">
+            <label>Tremper Albino:</label>
+            <select id="TremperAlbino_padre"><option value="">Padre</option><option value="Het">Het</option><option value="Visual">Visual</option></select>
+            <select id="TremperAlbino_madre"><option value="">Madre</option><option value="Het">Het</option><option value="Visual">Visual</option></select>
+        </div>
+        <div class="gene-row">
+            <label>Bell Albino:</label>
+            <select id="BellAlbino_padre"><option value="">Padre</option><option value="Het">Het</option><option value="Visual">Visual</option></select>
+            <select id="BellAlbino_madre"><option value="">Madre</option><option value="Het">Het</option><option value="Visual">Visual</option></select>
+        </div>
+        <div class="gene-row">
+            <label>Rainwater Albino:</label>
+            <select id="RainwaterAlbino_padre"><option value="">Padre</option><option value="Het">Het</option><option value="Visual">Visual</option></select>
+            <select id="RainwaterAlbino_madre"><option value="">Madre</option><option value="Het">Het</option><option value="Visual">Visual</option></select>
+        </div>
+        <div class="gene-row">
+            <label>Eclipse:</label>
+            <select id="Eclipse_padre"><option value="">Padre</option><option value="Het">Het</option><option value="Visual">Visual</option></select>
+            <select id="Eclipse_madre"><option value="">Madre</option><option value="Het">Het</option><option value="Visual">Visual</option></select>
+        </div>
+    </div>
 </div>
 
-<div id="output"></div>
+<div class="section">
+    <h2>Genes Co-dominantes</h2>
+    <div id="codominantes">
+        <div class="gene-row">
+            <label>Blizzard:</label>
+            <select id="Blizzard_padre"><option value="">Padre</option><option value="Presente">Presente</option><option value="Super">Super</option></select>
+            <select id="Blizzard_madre"><option value="">Madre</option><option value="Presente">Presente</option><option value="Super">Super</option></select>
+        </div>
+        <div class="gene-row">
+            <label>Murphy Patternless:</label>
+            <select id="MurphyPatternless_padre"><option value="">Padre</option><option value="Presente">Presente</option><option value="Super">Super</option></select>
+            <select id="MurphyPatternless_madre"><option value="">Madre</option><option value="Presente">Presente</option><option value="Super">Super</option></select>
+        </div>
+        <div class="gene-row">
+            <label>Mack Snow:</label>
+            <select id="MackSnow_padre"><option value="">Padre</option><option value="Presente">Presente</option><option value="Super">Super</option></select>
+            <select id="MackSnow_madre"><option value="">Madre</option><option value="Presente">Presente</option><option value="Super">Super</option></select>
+        </div>
+        <div class="gene-row">
+            <label>Super Mack Snow:</label>
+            <select id="SuperMackSnow_padre"><option value="">Padre</option><option value="Presente">Presente</option><option value="Super">Super</option></select>
+            <select id="SuperMackSnow_madre"><option value="">Madre</option><option value="Presente">Presente</option><option value="Super">Super</option></select>
+        </div>
+        <div class="gene-row">
+            <label>Giant:</label>
+            <select id="Giant_padre"><option value="">Padre</option><option value="Presente">Presente</option><option value="Super">Super</option></select>
+            <select id="Giant_madre"><option value="">Madre</option><option value="Presente">Presente</option><option value="Super">Super</option></select>
+        </div>
+        <div class="gene-row">
+            <label>Super Giant:</label>
+            <select id="SuperGiant_padre"><option value="">Padre</option><option value="Presente">Presente</option><option value="Super">Super</option></select>
+            <select id="SuperGiant_madre"><option value="">Madre</option><option value="Presente">Presente</option><option value="Super">Super</option></select>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>Genes Dominantes</h2>
+    <div id="dominantes">
+        <div class="gene-row">
+            <label>Enigma:</label>
+            <select id="Enigma_padre"><option value="">Padre</option><option value="Presente">Presente</option></select>
+            <select id="Enigma_madre"><option value="">Madre</option><option value="Presente">Presente</option></select>
+        </div>
+        <div class="gene-row">
+            <label>White & Yellow:</label>
+            <select id="WhiteYellow_padre"><option value="">Padre</option><option value="Presente">Presente</option></select>
+            <select id="WhiteYellow_madre"><option value="">Madre</option><option value="Presente">Presente</option></select>
+        </div>
+    </div>
+</div>
+
+<button onclick="render()">Calcular Cruce</button>
+
+<div id="results"></div>
 
 <script>
-// ===================== DEFINICIÓN DE GENES =====================
-const recessives = ["Tremper Albino","Bell Albino","Rainwater Albino","Eclipse","Blizzard","Murphy Patternless"];
-const codominants = ["Mack Snow","Giant"];
-const dominants = ["Enigma","White & Yellow"];
-const polygenic = ["Mandarin / Tangerine","Blood","Blood Inferno","Blood Electric","Tornado"];
-
-const combos = [
- {name:"RAPTOR", genes:["Tremper Albino","Eclipse","Murphy Patternless"], alias:"Tremper Eclipse Murphy"},
- {name:"Diablo Blanco", genes:["Tremper Albino","Blizzard","Eclipse"]},
- {name:"Radar", genes:["Bell Albino","Eclipse"]},
- {name:"Typhoon", genes:["Rainwater Albino","Eclipse"]},
- {name:"Universe", genes:["Mack Snow","Eclipse","White & Yellow"], super:true},
- {name:"Nova", genes:["Tremper Albino","Eclipse","Enigma"]}
-];
-
-// ===================== UI =====================
-function geneRow(gene, type){
- let opts = [""];
- if(type==="rec") opts.push("het","visual");
- if(type==="codom") opts.push("presente","super");
- if(type==="dom") opts.push("presente");
- if(type==="poly") opts.push("presente");
-
- return `
- <div class="gene-box">
-   <b>${gene}</b>
-   <div class="row">
-     <div class="col">
-       Padre
-       <select id="father_${gene}">
-         ${opts.map(o=>`<option value="${o}">${o}</option>`).join("")}
-       </select>
-     </div>
-     <div class="col">
-       Madre
-       <select id="mother_${gene}">
-         ${opts.map(o=>`<option value="${o}">${o}</option>`).join("")}
-       </select>
-     </div>
-   </div>
- </div>`;
-}
-
-function buildUI(){
- let g=document.getElementById("genes");
- g.innerHTML+="<h4>Genes recesivos</h4>";
- recessives.forEach(x=>g.innerHTML+=geneRow(x,"rec"));
- g.innerHTML+="<h4>Genes codominantes</h4>";
- codominants.forEach(x=>g.innerHTML+=geneRow(x,"codom"));
- g.innerHTML+="<h4>Genes dominantes</h4>";
- dominants.forEach(x=>g.innerHTML+=geneRow(x,"dom"));
- g.innerHTML+="<h4>Líneas poligénicas (informativas)</h4>";
- polygenic.forEach(x=>g.innerHTML+=geneRow(x,"poly"));
-}
-buildUI();
-
-// ===================== CÁLCULO =====================
-function get(p,g){ return document.getElementById(p+"_"+g).value; }
-
-function calculate(){
- let out=document.getElementById("output");
- out.innerHTML="";
- let results={rec:{},cod:{},dom:{},poly:[]};
-
- recessives.forEach(g=>{
-  let f=get("father",g), m=get("mother",g);
-  let res=[];
-  if(f==="visual"&&m==="visual") res.push(["Visual",4]);
-  else if((f==="visual"&&m==="het")||(m==="visual"&&f==="het")) res.push(["Visual",2],["Het",2]);
-  else if(f==="het"&&m==="het") res.push(["Visual",1],["Het",2]);
-  else if((f==="visual"&&m==="")||(m==="visual"&&f==="")) res.push(["Het",4]);
-  else if((f==="het"&&m==="")||(m==="het"&&f==="")) res.push(["Het",2]);
-  if(res.length) results.rec[g]=res;
- });
-
- codominants.forEach(g=>{
-  let f=get("father",g), m=get("mother",g);
-  let res=[];
-  if(f==="presente"&&m==="presente") res.push(["Super",1],["Presente",2]);
-  else if((f==="presente"&&m==="")||(m==="presente"&&f==="")) res.push(["Presente",2]);
-  else if((f==="super"&&m==="")||(m==="super"&&f==="")) res.push(["Presente",4]);
-  else if((f==="super"&&m==="presente")||(m==="super"&&f==="presente")) res.push(["Super",2],["Presente",2]);
-  else if(f==="super"&&m==="super") res.push(["Super",4]);
-  if(res.length) results.cod[g]=res;
- });
-
- dominants.forEach(g=>{
-  let f=get("father",g), m=get("mother",g);
-  let res=[];
-  if(f==="presente"&&m==="presente") res.push(["Presente",3]);
-  else if((f==="presente"&&m==="")||(m==="presente"&&f==="")) res.push(["Presente",2]);
-  if(res.length) results.dom[g]=res;
- });
-
- polygenic.forEach(g=>{
-  if(get("father",g)==="presente"||get("mother",g)==="presente") results.poly.push(g);
- });
-
- render(results);
-}
-
-// ===================== RENDER =====================
 function render() {
     const resultsDiv = document.getElementById("results");
     resultsDiv.innerHTML = "";
 
-    // Recolectar los genes del padre y madre
     const genes = [
         "Tremper Albino",
         "Bell Albino",
@@ -157,47 +123,39 @@ function render() {
     let madre = {};
     let padre = {};
     genes.forEach(g => {
-        padre[g] = document.getElementById(g.replace(/\s/g, '') + "_padre").value;
-        madre[g] = document.getElementById(g.replace(/\s/g, '') + "_madre").value;
+        const idg = g.replace(/\s/g,'');
+        padre[g] = document.getElementById(idg + "_padre").value;
+        madre[g] = document.getElementById(idg + "_madre").value;
     });
 
-    // Calcular resultados combinados
     let resultados = {};
     genes.forEach(g => {
         const p = padre[g];
         const m = madre[g];
-
-        if (!p && !m) return; // omite genes ausentes
+        if (!p && !m) return;
         resultados[g] = {};
 
-        // Recesivos: mostrar solo het y visual
         if (g.includes("Albino") || g === "Eclipse") {
-            resultados[g]["visual"] = (p === "Visual" || m === "Visual") ? 25 : 0;
-            resultados[g]["het"] = (p === "Het" || m === "Het") ? 50 : 0;
-        } 
-        // Co-dominantes: mostrar presente y super
-        else if (g === "Mack Snow" || g === "Super Mack Snow" || g === "Murphy Patternless") {
-            if (p || m) resultados[g]["presente"] = true;
-            if (p === "Super" || m === "Super") resultados[g]["super"] = true;
-        } 
-        // Dominantes: presente
-        else {
-            if (p || m) resultados[g]["presente"] = true;
+            resultados[g]["visual"] = (p==="Visual"||m==="Visual")?25:0;
+            resultados[g]["het"] = (p==="Het"||m==="Het")?50:0;
+        } else if (["Mack Snow","Super Mack Snow","Blizzard","Murphy Patternless","Giant","Super Giant"].includes(g)) {
+            if (p||m) resultados[g]["presente"]=true;
+            if (p==="Super"||m==="Super") resultados[g]["super"]=true;
+        } else {
+            if (p||m) resultados[g]["presente"]=true;
         }
     });
 
-    // Mostrar resultados
     const resHTML = document.createElement("div");
     resHTML.innerHTML = "<h3>Resultados</h3>";
-    for (const [g, val] of Object.entries(resultados)) {
-        if (Object.keys(val).length === 0) continue;
+    for (const [g,val] of Object.entries(resultados)) {
+        if (Object.keys(val).length===0) continue;
         let line = `<strong>${g}:</strong> `;
-        line += Object.entries(val).map(([k,v]) => `${k}: ${v}`).join(", ");
+        line += Object.entries(val).map(([k,v])=>`${k}: ${v}`).join(", ");
         resHTML.innerHTML += `<div>${line}</div>`;
     }
     resultsDiv.appendChild(resHTML);
 
-    // Definir combos y sus componentes
     const combos = [
         {name:"RAPTOR", genes:["Tremper Albino","Eclipse","Murphy Patternless"], line:"Tremper"},
         {name:"Diablo Blanco", genes:["Tremper Albino","Blizzard","Eclipse"], line:"Tremper"},
@@ -207,45 +165,35 @@ function render() {
         {name:"Nova", genes:["Tremper Albino","Eclipse","Enigma"], line:"Tremper"}
     ];
 
-    // Combos logrados
-    const combosLogrados = combos.filter(c => {
-        // Solo combos de la misma línea albina
-        const lineaValida = c.line === "Tremper" ? padre["Tremper Albino"] || madre["Tremper Albino"] :
-                           c.line === "Bell" ? padre["Bell Albino"] || madre["Bell Albino"] :
-                           c.line === "Rainwater" ? padre["Rainwater Albino"] || madre["Rainwater Albino"] : false;
-        if (!lineaValida) return false;
-
-        return c.genes.every(g => resultados[g]);
+    const combosLogrados = combos.filter(c=>{
+        const lineaValida = c.line==="Tremper"?padre["Tremper Albino"]||madre["Tremper Albino"]:
+                            c.line==="Bell"?padre["Bell Albino"]||madre["Bell Albino"]:
+                            c.line==="Rainwater"?padre["Rainwater Albino"]||madre["Rainwater Albino"]:false;
+        if(!lineaValida) return false;
+        return c.genes.every(g=>resultados[g]);
     });
 
-    // Mostrar combos logrados
-    const logradosDiv = document.createElement("div");
-    logradosDiv.innerHTML = "<h3>Combos logrados</h3>";
-    combosLogrados.forEach(c => {
-        logradosDiv.innerHTML += `<div style="background:#d4edda;padding:8px;margin:4px 0;">
-            ✅ ${c.name}<br>${c.genes.join("<br>")}
-        </div>`;
+    const logradosDiv=document.createElement("div");
+    logradosDiv.innerHTML="<h3>Combos logrados</h3>";
+    combosLogrados.forEach(c=>{
+        logradosDiv.innerHTML+=`<div style="background:#d4edda;padding:8px;margin:4px 0;">✅ ${c.name}<br>${c.genes.join("<br>")}</div>`;
     });
     resultsDiv.appendChild(logradosDiv);
 
-    // Rutas a combos
-    const rutasDiv = document.createElement("div");
-    rutasDiv.innerHTML = "<h3>Rutas a combos</h3>";
-    combos.forEach(c => {
-        // Validar línea albina
-        const lineaValida = c.line === "Tremper" ? padre["Tremper Albino"] || madre["Tremper Albino"] :
-                           c.line === "Bell" ? padre["Bell Albino"] || madre["Bell Albino"] :
-                           c.line === "Rainwater" ? padre["Rainwater Albino"] || madre["Rainwater Albino"] : false;
-        if (!lineaValida) return;
-
-        const faltan = c.genes.filter(g => !resultados[g]);
-        if (faltan.length === 0) return; // ya está logrado
-        rutasDiv.innerHTML += `<div style="background:#fff3cd;padding:8px;margin:4px 0;">
-            ➡ Ruta a ${c.name}<br>Faltan:<br>${faltan.join("<br>")}
-        </div>`;
+    const rutasDiv=document.createElement("div");
+    rutasDiv.innerHTML="<h3>Rutas a combos</h3>";
+    combos.forEach(c=>{
+        const lineaValida = c.line==="Tremper"?padre["Tremper Albino"]||madre["Tremper Albino"]:
+                            c.line==="Bell"?padre["Bell Albino"]||madre["Bell Albino"]:
+                            c.line==="Rainwater"?padre["Rainwater Albino"]||madre["Rainwater Albino"]:false;
+        if(!lineaValida) return;
+        const faltan=c.genes.filter(g=>!resultados[g]);
+        if(faltan.length===0) return;
+        rutasDiv.innerHTML+=`<div style="background:#fff3cd;padding:8px;margin:4px 0;">➡ Ruta a ${c.name}<br>Faltan:<br>${faltan.join("<br>")}</div>`;
     });
     resultsDiv.appendChild(rutasDiv);
 }
 </script>
+
 </body>
 </html>
