@@ -134,46 +134,117 @@ function calculate(){
 }
 
 // ===================== RENDER =====================
-function render(r){
- let o=document.getElementById("output");
+function render() {
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "";
 
- let geneCount=Object.keys(r.rec).length+Object.keys(r.cod).length+Object.keys(r.dom).length;
- o.innerHTML+=`<div class="section"><b>Resumen</b><br>
- Genes activos: ${geneCount}
- </div>`;
+    // Recolectar los genes del padre y madre
+    const genes = [
+        "Tremper Albino",
+        "Bell Albino",
+        "Rainwater Albino",
+        "Eclipse",
+        "Blizzard",
+        "Murphy Patternless",
+        "Mack Snow",
+        "Super Mack Snow",
+        "Giant",
+        "Super Giant",
+        "Enigma",
+        "White & Yellow"
+    ];
 
- function block(title,data){
-  let html="";
-  for(let g in data){
-   html+=`<b>${g}</b><br>`;
-   data[g].forEach(x=>html+=`• ${x[1]}/4 ${x[0]} (${x[1]*25}%)<br>`);
-   html+="<br>";
-  }
-  if(html) o.innerHTML+=`<div class="section"><h3>${title}</h3>${html}</div>`;
- }
+    let madre = {};
+    let padre = {};
+    genes.forEach(g => {
+        padre[g] = document.getElementById(g.replace(/\s/g, '') + "_padre").value;
+        madre[g] = document.getElementById(g.replace(/\s/g, '') + "_madre").value;
+    });
 
- block("Recesivos",r.rec);
- block("Codominantes",r.cod);
- block("Dominantes",r.dom);
+    // Calcular resultados combinados
+    let resultados = {};
+    genes.forEach(g => {
+        const p = padre[g];
+        const m = madre[g];
 
- let comboHTML="", routeHTML="";
- combos.forEach(c=>{
-  let have=c.genes.filter(g=>r.rec[g]||r.cod[g]||r.dom[g]);
-  if(have.length===c.genes.length){
-   comboHTML+=`<div class="combo">✅ ${c.name}<br>${c.genes.join("<br>")}</div>`;
-  } else if(have.length>=1){
-   let missing=c.genes.filter(g=>!have.includes(g));
-   routeHTML+=`<div class="route">➜ Ruta a ${c.name}<br>Faltan:<br>${missing.join("<br>")}</div>`;
-  }
- });
+        if (!p && !m) return; // omite genes ausentes
+        resultados[g] = {};
 
- if(comboHTML) o.innerHTML+=`<div class="section"><h3>Combos logrados</h3>${comboHTML}</div>`;
- if(routeHTML) o.innerHTML+=`<div class="section"><h3>Rutas a combos</h3>${routeHTML}</div>`;
+        // Recesivos: mostrar solo het y visual
+        if (g.includes("Albino") || g === "Eclipse") {
+            resultados[g]["visual"] = (p === "Visual" || m === "Visual") ? 25 : 0;
+            resultados[g]["het"] = (p === "Het" || m === "Het") ? 50 : 0;
+        } 
+        // Co-dominantes: mostrar presente y super
+        else if (g === "Mack Snow" || g === "Super Mack Snow" || g === "Murphy Patternless") {
+            if (p || m) resultados[g]["presente"] = true;
+            if (p === "Super" || m === "Super") resultados[g]["super"] = true;
+        } 
+        // Dominantes: presente
+        else {
+            if (p || m) resultados[g]["presente"] = true;
+        }
+    });
 
- if(r.poly.length){
-  o.innerHTML+=`<div class="section"><h3>Líneas poligénicas</h3>${r.poly.join("<br>")}
-  <div class="small">No influyen en porcentajes genéticos</div></div>`;
- }
+    // Mostrar resultados
+    const resHTML = document.createElement("div");
+    resHTML.innerHTML = "<h3>Resultados</h3>";
+    for (const [g, val] of Object.entries(resultados)) {
+        if (Object.keys(val).length === 0) continue;
+        let line = `<strong>${g}:</strong> `;
+        line += Object.entries(val).map(([k,v]) => `${k}: ${v}`).join(", ");
+        resHTML.innerHTML += `<div>${line}</div>`;
+    }
+    resultsDiv.appendChild(resHTML);
+
+    // Definir combos y sus componentes
+    const combos = [
+        {name:"RAPTOR", genes:["Tremper Albino","Eclipse","Murphy Patternless"], line:"Tremper"},
+        {name:"Diablo Blanco", genes:["Tremper Albino","Blizzard","Eclipse"], line:"Tremper"},
+        {name:"Radar", genes:["Bell Albino","Eclipse"], line:"Bell"},
+        {name:"Typhoon", genes:["Rainwater Albino","Eclipse"], line:"Rainwater"},
+        {name:"Universe", genes:["Super Mack Snow","Eclipse","White & Yellow"], line:"Tremper"},
+        {name:"Nova", genes:["Tremper Albino","Eclipse","Enigma"], line:"Tremper"}
+    ];
+
+    // Combos logrados
+    const combosLogrados = combos.filter(c => {
+        // Solo combos de la misma línea albina
+        const lineaValida = c.line === "Tremper" ? padre["Tremper Albino"] || madre["Tremper Albino"] :
+                           c.line === "Bell" ? padre["Bell Albino"] || madre["Bell Albino"] :
+                           c.line === "Rainwater" ? padre["Rainwater Albino"] || madre["Rainwater Albino"] : false;
+        if (!lineaValida) return false;
+
+        return c.genes.every(g => resultados[g]);
+    });
+
+    // Mostrar combos logrados
+    const logradosDiv = document.createElement("div");
+    logradosDiv.innerHTML = "<h3>Combos logrados</h3>";
+    combosLogrados.forEach(c => {
+        logradosDiv.innerHTML += `<div style="background:#d4edda;padding:8px;margin:4px 0;">
+            ✅ ${c.name}<br>${c.genes.join("<br>")}
+        </div>`;
+    });
+    resultsDiv.appendChild(logradosDiv);
+
+    // Rutas a combos
+    const rutasDiv = document.createElement("div");
+    rutasDiv.innerHTML = "<h3>Rutas a combos</h3>";
+    combos.forEach(c => {
+        // Validar línea albina
+        const lineaValida = c.line === "Tremper" ? padre["Tremper Albino"] || madre["Tremper Albino"] :
+                           c.line === "Bell" ? padre["Bell Albino"] || madre["Bell Albino"] :
+                           c.line === "Rainwater" ? padre["Rainwater Albino"] || madre["Rainwater Albino"] : false;
+        if (!lineaValida) return;
+
+        const faltan = c.genes.filter(g => !resultados[g]);
+        if (faltan.length === 0) return; // ya está logrado
+        rutasDiv.innerHTML += `<div style="background:#fff3cd;padding:8px;margin:4px 0;">
+            ➡ Ruta a ${c.name}<br>Faltan:<br>${faltan.join("<br>")}
+        </div>`;
+    });
+    resultsDiv.appendChild(rutasDiv);
 }
 </script>
 </body>
