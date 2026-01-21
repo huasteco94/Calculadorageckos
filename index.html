@@ -1,141 +1,116 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Calculadora Genética – Gecko Leopardo</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-body{font-family:Arial;background:#f5f5f5;padding:15px}
-.section{background:#fff;padding:12px;margin-bottom:15px;border-radius:8px}
-.row{display:flex;gap:10px}
-.row select{flex:1}
-.result{background:#eee;padding:8px;margin-top:6px;border-radius:6px}
-button{width:100%;padding:12px;font-size:16px}
-</style>
+  <meta charset="UTF-8">
+  <title>Calculadora Genética – Gecko Leopardo</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h2 { margin-top: 30px; }
+    .gene { margin-bottom: 10px; }
+    select { margin-right: 10px; }
+    button { margin-top: 20px; padding: 10px 20px; }
+    #resultados { margin-top: 30px; }
+  </style>
 </head>
-
 <body>
 
-<h2>Calculadora Genética – Gecko Leopardo</h2>
+<h1>Calculadora Genética – Gecko Leopardo</h1>
 
-<div class="section" id="genes"></div>
+<h2>Genes Recesivos</h2>
+
+<div class="gene">
+  Tremper Albino
+  <select id="tremper_p"><option value=""></option><option>het</option><option>visual</option></select>
+  <select id="tremper_m"><option value=""></option><option>het</option><option>visual</option></select>
+</div>
+
+<div class="gene">
+  Bell Albino
+  <select id="bell_p"><option value=""></option><option>het</option><option>visual</option></select>
+  <select id="bell_m"><option value=""></option><option>het</option><option>visual</option></select>
+</div>
+
+<div class="gene">
+  Rainwater Albino
+  <select id="rain_p"><option value=""></option><option>het</option><option>visual</option></select>
+  <select id="rain_m"><option value=""></option><option>het</option><option>visual</option></select>
+</div>
+
+<div class="gene">
+  Eclipse
+  <select id="eclipse_p"><option value=""></option><option>het</option><option>visual</option></select>
+  <select id="eclipse_m"><option value=""></option><option>het</option><option>visual</option></select>
+</div>
+
+<div class="gene">
+  Blizzard
+  <select id="blizzard_p"><option value=""></option><option>het</option><option>visual</option></select>
+  <select id="blizzard_m"><option value=""></option><option>het</option><option>visual</option></select>
+</div>
+
+<div class="gene">
+  Murphy Patternless
+  <select id="murphy_p"><option value=""></option><option>het</option><option>visual</option></select>
+  <select id="murphy_m"><option value=""></option><option>het</option><option>visual</option></select>
+</div>
+
+<h2>Codominantes</h2>
+
+<div class="gene">
+  Mack Snow
+  <select id="mack_p"><option value=""></option><option>presente</option><option>super</option></select>
+  <select id="mack_m"><option value=""></option><option>presente</option><option>super</option></select>
+</div>
+
+<div class="gene">
+  Giant
+  <select id="giant_p"><option value=""></option><option>giant</option><option>super giant</option></select>
+  <select id="giant_m"><option value=""></option><option>giant</option><option>super giant</option></select>
+</div>
+
+<h2>Dominantes</h2>
+
+<div class="gene">
+  Enigma
+  <select id="enigma_p"><option value=""></option><option>presente</option></select>
+  <select id="enigma_m"><option value=""></option><option>presente</option></select>
+</div>
+
+<div class="gene">
+  White & Yellow
+  <select id="wy_p"><option value=""></option><option>presente</option></select>
+  <select id="wy_m"><option value=""></option><option>presente</option></select>
+</div>
 
 <button onclick="calcular()">Calcular Cruce</button>
 
-<div class="section">
-<h3>Resultados</h3>
 <div id="resultados"></div>
-<h3>Combos</h3>
-<div id="combos"></div>
-</div>
 
 <script>
-const genes = [
- ["tremper","Tremper Albino","rec"],
- ["bell","Bell Albino","rec"],
- ["rainwater","Rainwater Albino","rec"],
- ["eclipse","Eclipse","rec"],
- ["blizzard","Blizzard","rec"],
- ["murphy","Murphy Patternless","rec"],
- ["mack","Mack Snow","co"],
- ["giant","Giant","co"],
- ["enigma","Enigma","dom"],
- ["wy","White & Yellow","dom"]
-];
+function calcular() {
+  let combos = [];
 
-const combosDef = [
- {nombre:"Raptor", req:["tremper","eclipse","murphy"]},
- {nombre:"Diablo Blanco", req:["tremper","blizzard","eclipse"]},
- {nombre:"Radar", req:["bell","eclipse"]},
- {nombre:"Typhoon", req:["rainwater","eclipse"]},
- {nombre:"Universe", req:["mack_super","eclipse","wy"]}
-];
+  const tremper = [tremper_p.value, tremper_m.value];
+  const eclipse = [eclipse_p.value, eclipse_m.value];
+  const murphy = [murphy_p.value, murphy_m.value];
 
-const gdiv=document.getElementById("genes");
-genes.forEach(g=>{
-gdiv.innerHTML+=`
-<label>${g[1]}</label>
-<div class="row">
-<select id="${g[0]}_p">
-<option value="normal">Padre</option>
-<option value="het">Het</option>
-<option value="visual">Visual</option>
-<option value="super">Super</option>
-<option value="present">Presente</option>
-</select>
-<select id="${g[0]}_m">
-<option value="normal">Madre</option>
-<option value="het">Het</option>
-<option value="visual">Visual</option>
-<option value="super">Super</option>
-<option value="present">Presente</option>
-</select>
-</div>`;
-});
+  // RAPTOR correcto
+  if (
+    tremper.includes("visual") &&
+    eclipse.includes("visual") &&
+    murphy.includes("visual")
+  ) {
+    combos.push("RAPTOR (Tremper + Eclipse + Murphy Patternless) – 100%");
+  }
 
-function frac(p){return p===100?"4/4":p===75?"3/4":p===50?"2/4":p===25?"1/4":"";}
+  const res = document.getElementById("resultados");
+  res.innerHTML = "<h2>Resultados</h2>";
 
-function recCalc(p,m){
-if(p==="visual"&&m==="visual")return{v:100};
-if((p==="visual"&&m==="het")||(p==="het"&&m==="visual"))return{v:50,h:50};
-if(p==="het"&&m==="het")return{v:25,h:50};
-if((p==="visual"&&m==="normal")||(p==="normal"&&m==="visual"))return{h:100};
-if((p==="het"&&m==="normal")||(p==="normal"&&m==="het"))return{h:50};
-return{};
-}
-
-function calcular(){
-let res={},genesPresentes={};
-
-genes.forEach(g=>{
-const p=document.getElementById(g[0]+"_p").value;
-const m=document.getElementById(g[0]+"_m").value;
-
-if(g[2]==="rec"){
-const r=recCalc(p,m);
-if(Object.keys(r).length){
-res[g[0]]=r;
-if(r.v)genesPresentes[g[0]]=r.v;
-}
-}
-if(g[2]==="co"){
-if(p==="super"||m==="super"){res[g[0]]={super:true};genesPresentes[g[0]+"_super"]=100;}
-else if(p!=="normal"||m!=="normal"){res[g[0]]={present:true};genesPresentes[g[0]]=50;}
-}
-if(g[2]==="dom"){
-if(p==="present"||m==="present"){res[g[0]]={present:true};genesPresentes[g[0]]=50;}
-}
-});
-
-mostrar(res,genesPresentes);
-}
-
-function mostrar(r,gp){
-const d=document.getElementById("resultados");
-const c=document.getElementById("combos");
-d.innerHTML="";c.innerHTML="";
-
-for(const g in r){
-let t="";
-if(r[g].v)t+=`${r[g].v}% Visual (${frac(r[g].v)})<br>`;
-if(r[g].h)t+=`${r[g].h}% Het (${frac(r[g].h)})<br>`;
-if(r[g].present)t+="Presente<br>";
-if(r[g].super)t+="Super<br>";
-d.innerHTML+=`<div class="result"><b>${g.toUpperCase()}</b><br>${t}</div>`;
-}
-
-combosDef.forEach(cb=>{
-let ok=true,prob=1,faltan=[];
-cb.req.forEach(rq=>{
-if(!gp[rq]){ok=false;faltan.push(rq);}
-else prob*=gp[rq]/100;
-});
-if(ok){
-c.innerHTML+=`<div class="result">✔ ${cb.nombre} (~${Math.round(prob*100)}% ≈ 1 de ${Math.round(1/prob)})</div>`;
-}else{
-c.innerHTML+=`<div class="result">➜ Ruta a ${cb.nombre} (falta: ${faltan.join(", ")})</div>`;
-}
-});
+  if (combos.length === 0) {
+    res.innerHTML += "<p>No se detectaron combos completos.</p>";
+  } else {
+    res.innerHTML += "<ul>" + combos.map(c => `<li>${c}</li>`).join("") + "</ul>";
+  }
 }
 </script>
 
