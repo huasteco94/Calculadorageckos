@@ -153,54 +153,55 @@ function calcularCruce() {
     }
   }
 
-  // === Combos logrados ===
+  // === Combos logrados y rutas ===
   resultadosHTML += '<h3>Combos logrados</h3>';
   let combosLogrados = [];
-
-  // Tremper Albino Combos
-  if (genes.tremper.includes('visual') && genes.eclipse.includes('visual') && genes.murphy.includes('presente')) {
-    combosLogrados.push('<div class="combo-logrado">✅ RAPTOR<br>Tremper + Eclipse + Murphy Patternless</div>');
-  }
-  if (genes.tremper.includes('visual') && genes.eclipse.includes('visual') && genes.blizzard.includes('presente')) {
-    combosLogrados.push('<div class="combo-logrado">✅ Diablo Blanco<br>Tremper + Blizzard + Eclipse</div>');
-  }
-
-  // Bell Albino Combos
-  if (genes.bell.includes('visual') && genes.eclipse.includes('visual') && genes.blizzard.includes('presente')) {
-    combosLogrados.push('<div class="combo-logrado">✅ White Knight<br>Bell + Eclipse + Blizzard</div>');
-  }
-  if (genes.bell.includes('visual') && genes.eclipse.includes('visual')) {
-    combosLogrados.push('<div class="combo-logrado">✅ Radar<br>Bell + Eclipse</div>');
-  }
-
-  // Rainwater Albino Combos
-  if (genes.rain.includes('visual') && genes.eclipse.includes('visual')) {
-    combosLogrados.push('<div class="combo-logrado">✅ Typhoon<br>Las Vegas + Eclipse</div>');
-  }
-
-  resultadosHTML += combosLogrados.join('');
-
-  // === Rutas a combos ===
-  resultadosHTML += '<h3>Rutas a combos</h3>';
   let rutasHTML = '';
 
-  // Tremper
-  if (genes.tremper.includes('visual')) {
-    if (!genes.murphy.includes('presente')) rutasHTML += '<div class="ruta-combo">➜ Ruta a Raptor: Falta Murphy Patternless</div>';
-    if (!genes.blizzard.includes('presente')) rutasHTML += '<div class="ruta-combo">➜ Ruta a Diablo Blanco: Falta Blizzard</div>';
-  }
+  // Lista de combos con genes necesarios y línea
+  const combos = [
+    {name:'BEE',genes:['enigma','eclipse'],linea:'tremper'},
+    {name:'Black Hole',genes:['mack','enigma','eclipse'],linea:'tremper'},
+    {name:'Total Eclipse',genes:['superMack','eclipse'],linea:'tremper'},
+    {name:'Universe',genes:['superMack','eclipse','wy'],linea:'tremper'},
+    {name:'Banana Blizzard',genes:['murphy','blizzard'],linea:'tremper'},
+    {name:'Super Platinum',genes:['superMack','murphy'],linea:'tremper'},
+    {name:'Raptor',genes:['tremper','eclipse','murphy'],linea:'tremper'},
+    {name:'Aptor',genes:['tremper','murphy'],linea:'tremper'},
+    {name:'Ember',genes:['tremper','eclipse','murphy'],linea:'tremper'},
+    {name:'Snowflake',genes:['mack','tremper','eclipse','murphy'],linea:'tremper'},
+    {name:'Blazing Blizzard',genes:['tremper','blizzard'],linea:'tremper'},
+    {name:'Diablo Blanco',genes:['tremper','blizzard','eclipse'],linea:'tremper'},
+    {name:'Nova',genes:['tremper','eclipse','enigma'],linea:'tremper'},
+    {name:'Super Nova',genes:['superMack','tremper','eclipse','enigma'],linea:'tremper'},
+    {name:'Dreamsickle',genes:['mack','tremper','eclipse','enigma'],linea:'tremper'},
+    {name:'Radar',genes:['bell','eclipse'],linea:'bell'},
+    {name:'Stealth',genes:['mack','enigma','bell','eclipse'],linea:'bell'},
+    {name:'Super Stealth',genes:['superMack','radar','enigma'],linea:'bell'},
+    {name:'White Knight',genes:['bell','eclipse','blizzard'],linea:'bell'},
+    {name:'Typhoon',genes:['rain','eclipse'],linea:'rain'},
+    {name:'Cyclone',genes:['rain','eclipse','murphy'],linea:'rain'}
+  ];
 
-  // Bell
-  if (genes.bell.includes('visual')) {
-    if (!genes.eclipse.includes('visual')) rutasHTML += '<div class="ruta-combo">➜ Ruta a Radar: Falta Eclipse</div>';
-    if (!genes.blizzard.includes('presente')) rutasHTML += '<div class="ruta-combo">➜ Ruta a White Knight: Falta Blizzard</div>';
-  }
+  // Determinar línea del ejemplar
+  let linea = '';
+  if (genes.tremper.includes('visual')) linea='tremper';
+  else if (genes.bell.includes('visual')) linea='bell';
+  else if (genes.rain.includes('visual')) linea='rain';
 
-  // Rainwater
-  if (genes.rain.includes('visual')) {
-    if (!genes.eclipse.includes('visual')) rutasHTML += '<div class="ruta-combo">➜ Ruta a Typhoon: Falta Eclipse</div>';
-  }
+  combos.forEach(c=>{
+    if (c.linea===linea) {
+      let presentes = c.genes.filter(g=>genes[g] && genes[g].includes('visual') || genes[g].includes('presente'));
+      if (presentes.length === c.genes.length) {
+        combosLogrados.push(`<div class="combo-logrado">✅ ${c.name} <br>${c.genes.join(' + ')}</div>`);
+      } else if (presentes.length>0){
+        let faltantes = c.genes.filter(g=>!presentes.includes(g));
+        rutasHTML += `<div class="ruta-combo">➜ Ruta a ${c.name}: Falta ${faltantes.join(', ')} (${c.genes.join(' + ')})</div>`;
+      }
+    }
+  });
 
+  resultadosHTML += combosLogrados.join('');
   resultadosHTML += rutasHTML;
 
   // === Poligénicos Informativos ===
