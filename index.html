@@ -11,7 +11,7 @@
 
 <h2>Albinismo</h2>
 
-Mention Tremper
+<h3>Tremper</h3>
 Padre:
 <select id="padre_tremper">
   <option value="normal">Normal</option>
@@ -109,28 +109,33 @@ Madre:
 
 <script>
 function calcular() {
-// --- Validación de albinismos incompatibles ---
-const albinismos = [
-  { nombre: "Tremper", padre: padre_tremper.value, madre: madre_tremper.value },
-  { nombre: "Bell", padre: padre_bell.value, madre: madre_bell.value },
-  { nombre: "Rainwater", padre: padre_rainwater.value, madre: madre_rainwater.value }
-];
-
-const activos = albinismos.filter(a =>
-  a.padre !== "normal" || a.madre !== "normal"
-);
-
-if (activos.length > 1) {
-  document.getElementById("resultado").textContent =
-    "⚠️ Cruce inválido:\n" +
-    "Los albinismos NO se combinan entre sí.\n\n" +
-    "Detectados:\n" +
-    activos.map(a => "- " + a.nombre).join("\n");
-  return;
-}
-  
   let t = "";
 
+  /* =======================
+     PASO 2 – VALIDACIÓN ALBINISMO
+     ======================= */
+  const albinismos = [
+    { nombre: "Tremper", padre: padre_tremper.value, madre: madre_tremper.value },
+    { nombre: "Bell", padre: padre_bell.value, madre: madre_bell.value },
+    { nombre: "Rainwater", padre: padre_rainwater.value, madre: madre_rainwater.value }
+  ];
+
+  const activos = albinismos.filter(a =>
+    a.padre !== "normal" || a.madre !== "normal"
+  );
+
+  if (activos.length > 1) {
+    document.getElementById("resultado").textContent =
+      "⚠️ CRUCE INVÁLIDO\n\n" +
+      "Los albinismos NO se combinan entre sí.\n\n" +
+      "Detectados:\n" +
+      activos.map(a => "- " + a.nombre).join("\n");
+    return;
+  }
+
+  /* =======================
+     FUNCIÓN DE IMPRESIÓN
+     ======================= */
   function bloque(nombre, res, padre, madre) {
     if (padre === "normal" && madre === "normal") return;
 
@@ -151,26 +156,51 @@ if (activos.length > 1) {
     t += "\n";
   }
 
-  bloque("Tremper",
-    calcularGen("tremper", padre_tremper.value, madre_tremper.value),
-    padre_tremper.value, madre_tremper.value);
+  const tremper = calcularGen("tremper", padre_tremper.value, madre_tremper.value);
+  const eclipse = calcularGen("eclipse", padre_eclipse.value, madre_eclipse.value);
+  const mack = calcularGen("mack_snow", padre_mack.value, madre_mack.value);
 
-  bloque("Bell",
-    calcularGen("bell", padre_bell.value, madre_bell.value),
-    padre_bell.value, madre_bell.value);
+  bloque("Tremper", tremper, padre_tremper.value, madre_tremper.value);
+  bloque("Eclipse", eclipse, padre_eclipse.value, madre_eclipse.value);
+  bloque("Mack Snow", mack, padre_mack.value, madre_mack.value);
 
-  bloque("Rainwater",
-    calcularGen("rainwater", padre_rainwater.value, madre_rainwater.value),
-    padre_rainwater.value, madre_rainwater.value);
+  /* =======================
+     PASO 3 – DETECCIÓN DE COMBOS
+     ======================= */
+  let combos = [];
 
-  bloque("Eclipse",
-    calcularGen("eclipse", padre_eclipse.value, madre_eclipse.value),
-    padre_eclipse.value, madre_eclipse.value);
+  if (
+    tremper.resultado.visual === 100 &&
+    eclipse.resultado.visual === 100
+  ) {
+    combos.push("RAPTOR");
+  }
 
-  bloque("Mack Snow",
-    calcularGen("mack_snow", padre_mack.value, madre_mack.value),
-    padre_mack.value, madre_mack.value);
+  if (
+    tremper.resultado.visual === 100 &&
+    eclipse.resultado.visual === 100 &&
+    mack.resultado.super === 100
+  ) {
+    combos.push("SUPER RAPTOR");
+  }
 
-  bloque("Giant",
-    calcularGen("giant", padre_giant.value, madre_giant.value),
-    padre
+  if (
+    mack.resultado.super === 100 &&
+    tremper.resultado.visual === 100 &&
+    eclipse.resultado.visual === 100
+  ) {
+    combos.push("DIABLO BLANCO");
+  }
+
+  if (combos.length > 0) {
+    t += "COMBOS DETECTADOS\n";
+    combos.forEach(c => t += "- " + c + "\n");
+  }
+
+  document.getElementById("resultado").textContent =
+    t || "No hay genes activos en este cruce.";
+}
+</script>
+
+</body>
+</html>
