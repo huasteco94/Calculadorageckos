@@ -2,40 +2,49 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Calculadora Genética Gecko Leopardo</title>
+<title>Calculadora Genética – Gecko Leopardo</title>
 
 <style>
 body {
   font-family: Arial, sans-serif;
   padding: 15px;
-  background:#f7f7f7;
+  background: #f2f2f2;
 }
-h1 { text-align:center; }
+h1 { text-align: center; }
+
 section {
-  background:white;
-  padding:10px;
-  margin-bottom:15px;
-  border-radius:6px;
+  background: white;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
 }
+
 .gene {
-  display:grid;
-  grid-template-columns: 20px 1fr 1fr 1fr;
-  gap:5px;
-  align-items:center;
-  margin-bottom:6px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 8px;
 }
-label { font-size:14px; }
-select { width:100%; }
+
+.gene label {
+  grid-column: 1 / 4;
+  font-weight: bold;
+}
+
+select {
+  width: 100%;
+  padding: 4px;
+}
+
 button {
-  width:100%;
-  padding:10px;
-  font-size:16px;
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
 }
+
 #resultado {
-  white-space:pre-line;
-  background:white;
-  padding:10px;
-  border-radius:6px;
+  white-space: pre-line;
+  font-size: 14px;
 }
 </style>
 </head>
@@ -91,15 +100,14 @@ const genes = {
 };
 
 // ======================
-// UI GENERACIÓN
+// UI
 // ======================
 
-function crearGenes(lista, contenedor, opciones) {
+function renderGenes(lista, contenedor, opciones) {
   const div = document.getElementById(contenedor);
   lista.forEach(g => {
     div.innerHTML += `
       <div class="gene">
-        <input type="checkbox" id="use_${g.key}">
         <label>${g.label}</label>
         <select id="${g.key}_padre">${opciones}</select>
         <select id="${g.key}_madre">${opciones}</select>
@@ -108,7 +116,7 @@ function crearGenes(lista, contenedor, opciones) {
   });
 }
 
-crearGenes(
+renderGenes(
   genes.recesivos,
   "recesivos",
   `<option value="normal">Normal</option>
@@ -116,14 +124,14 @@ crearGenes(
    <option value="visual">Visual</option>`
 );
 
-crearGenes(
+renderGenes(
   genes.codominantes,
   "codominantes",
   `<option value="ausente">Ausente</option>
    <option value="presente">Presente</option>`
 );
 
-crearGenes(
+renderGenes(
   genes.dominantes,
   "dominantes",
   `<option value="ausente">Ausente</option>
@@ -150,15 +158,62 @@ function calcRecesivo(p, m) {
 // ======================
 
 const combos = [
-  {
-    nombre:"RAPTOR",
-    requiere:{ tremper:"visual", eclipse:"visual", murphy:"visual" }
-  },
-  {
-    nombre:"Diablo Blanco",
-    requiere:{ tremper:"visual", blizzard:"visual", eclipse:"visual" },
-    advertencia:"Eclipse puede quedar oculto por Blizzard"
-  },
-  {
-    nombre:"Radar",
-    requiere:{
+  { nombre:"RAPTOR", requiere:{ tremper:"visual", eclipse:"visual", murphy:"visual" }},
+  { nombre:"Diablo Blanco", requiere:{ tremper:"visual", blizzard:"visual", eclipse:"visual" },
+    advertencia:"Eclipse puede quedar oculto por Blizzard" },
+  { nombre:"Radar", requiere:{ bell:"visual", eclipse:"visual" }},
+  { nombre:"Typhoon", requiere:{ rainwater:"visual", eclipse:"visual" }},
+  { nombre:"Universe", requiere:{ supermack:"presente", eclipse:"visual", wy:"presente" },
+    alias:"Galaxy" }
+];
+
+// ======================
+// CÁLCULO
+// ======================
+
+function calcular() {
+  let estado = {};
+  let salida = "GENÉTICA RESULTANTE\n\n";
+
+  genes.recesivos.forEach(g => {
+    const p = document.getElementById(g.key+"_padre").value;
+    const m = document.getElementById(g.key+"_madre").value;
+    estado[g.key] = calcRecesivo(p,m);
+    salida += `${g.label}: ${JSON.stringify(estado[g.key])}\n`;
+  });
+
+  genes.codominantes.concat(genes.dominantes).forEach(g => {
+    const p = document.getElementById(g.key+"_padre").value;
+    const m = document.getElementById(g.key+"_madre").value;
+    estado[g.key] = (p==="presente"||m==="presente") ? "presente" : "ausente";
+    salida += `${g.label}: ${estado[g.key]}\n`;
+  });
+
+  salida += "\nCOMBOS\n";
+
+  combos.forEach(c => {
+    let ok=true, faltan=[];
+    for (let g in c.requiere) {
+      if (c.requiere[g]==="visual" && !estado[g]?.visual) {
+        ok=false; faltan.push(g);
+      }
+      if (c.requiere[g]==="presente" && estado[g]!=="presente") {
+        ok=false; faltan.push(g);
+      }
+    }
+    if (ok) {
+      salida += `✅ ${c.nombre}`;
+      if (c.alias) salida += ` (alias: ${c.alias})`;
+      salida += "\n";
+      if (c.advertencia) salida += `⚠️ ${c.advertencia}\n`;
+    } else if (faltan.length < Object.keys(c.requiere).length) {
+      salida += `↪ Ruta a ${c.nombre} (falta: ${faltan.join(", ")})\n`;
+    }
+  });
+
+  document.getElementById("resultado").textContent = salida;
+}
+</script>
+
+</body>
+</html>
