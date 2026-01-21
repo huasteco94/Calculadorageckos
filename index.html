@@ -6,8 +6,16 @@
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; }
     h2 { margin-top: 30px; }
-    .gene { margin-bottom: 10px; }
-    select { margin-right: 10px; }
+    .gene {
+      display: grid;
+      grid-template-columns: 180px 1fr 1fr;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .gene strong { font-size: 14px; }
+    label { font-size: 12px; color: #555; }
+    select { width: 100%; }
     button { margin-top: 20px; padding: 10px 20px; }
     #resultados { margin-top: 30px; }
   </style>
@@ -19,67 +27,79 @@
 <h2>Genes Recesivos</h2>
 
 <div class="gene">
-  Tremper Albino
-  <select id="tremper_p"><option value=""></option><option>het</option><option>visual</option></select>
-  <select id="tremper_m"><option value=""></option><option>het</option><option>visual</option></select>
+  <strong>Tremper Albino</strong>
+  <div>
+    <label>Padre</label>
+    <select id="tremper_p"><option value=""></option><option>het</option><option>visual</option></select>
+  </div>
+  <div>
+    <label>Madre</label>
+    <select id="tremper_m"><option value=""></option><option>het</option><option>visual</option></select>
+  </div>
 </div>
 
 <div class="gene">
-  Bell Albino
-  <select id="bell_p"><option value=""></option><option>het</option><option>visual</option></select>
-  <select id="bell_m"><option value=""></option><option>het</option><option>visual</option></select>
+  <strong>Eclipse</strong>
+  <div>
+    <label>Padre</label>
+    <select id="eclipse_p"><option value=""></option><option>het</option><option>visual</option></select>
+  </div>
+  <div>
+    <label>Madre</label>
+    <select id="eclipse_m"><option value=""></option><option>het</option><option>visual</option></select>
+  </div>
 </div>
 
 <div class="gene">
-  Rainwater Albino
-  <select id="rain_p"><option value=""></option><option>het</option><option>visual</option></select>
-  <select id="rain_m"><option value=""></option><option>het</option><option>visual</option></select>
-</div>
-
-<div class="gene">
-  Eclipse
-  <select id="eclipse_p"><option value=""></option><option>het</option><option>visual</option></select>
-  <select id="eclipse_m"><option value=""></option><option>het</option><option>visual</option></select>
-</div>
-
-<div class="gene">
-  Blizzard
-  <select id="blizzard_p"><option value=""></option><option>het</option><option>visual</option></select>
-  <select id="blizzard_m"><option value=""></option><option>het</option><option>visual</option></select>
-</div>
-
-<div class="gene">
-  Murphy Patternless
-  <select id="murphy_p"><option value=""></option><option>het</option><option>visual</option></select>
-  <select id="murphy_m"><option value=""></option><option>het</option><option>visual</option></select>
+  <strong>Murphy Patternless</strong>
+  <div>
+    <label>Padre</label>
+    <select id="murphy_p"><option value=""></option><option>het</option><option>visual</option></select>
+  </div>
+  <div>
+    <label>Madre</label>
+    <select id="murphy_m"><option value=""></option><option>het</option><option>visual</option></select>
+  </div>
 </div>
 
 <h2>Codominantes</h2>
 
 <div class="gene">
-  Mack Snow
-  <select id="mack_p"><option value=""></option><option>presente</option><option>super</option></select>
-  <select id="mack_m"><option value=""></option><option>presente</option><option>super</option></select>
+  <strong>Mack Snow</strong>
+  <div>
+    <label>Padre</label>
+    <select id="mack_p"><option value=""></option><option>presente</option><option>super</option></select>
+  </div>
+  <div>
+    <label>Madre</label>
+    <select id="mack_m"><option value=""></option><option>presente</option><option>super</option></select>
+  </div>
 </div>
 
 <div class="gene">
-  Giant
-  <select id="giant_p"><option value=""></option><option>giant</option><option>super giant</option></select>
-  <select id="giant_m"><option value=""></option><option>giant</option><option>super giant</option></select>
+  <strong>Giant</strong>
+  <div>
+    <label>Padre</label>
+    <select id="giant_p"><option value=""></option><option>giant</option><option>super giant</option></select>
+  </div>
+  <div>
+    <label>Madre</label>
+    <select id="giant_m"><option value=""></option><option>giant</option><option>super giant</option></select>
+  </div>
 </div>
 
 <h2>Dominantes</h2>
 
 <div class="gene">
-  Enigma
-  <select id="enigma_p"><option value=""></option><option>presente</option></select>
-  <select id="enigma_m"><option value=""></option><option>presente</option></select>
-</div>
-
-<div class="gene">
-  White & Yellow
-  <select id="wy_p"><option value=""></option><option>presente</option></select>
-  <select id="wy_m"><option value=""></option><option>presente</option></select>
+  <strong>Enigma</strong>
+  <div>
+    <label>Padre</label>
+    <select id="enigma_p"><option value=""></option><option>presente</option></select>
+  </div>
+  <div>
+    <label>Madre</label>
+    <select id="enigma_m"><option value=""></option><option>presente</option></select>
+  </div>
 </div>
 
 <button onclick="calcular()">Calcular Cruce</button>
@@ -88,11 +108,11 @@
 
 <script>
 function calcular() {
-  let combos = [];
-
   const tremper = [tremper_p.value, tremper_m.value];
   const eclipse = [eclipse_p.value, eclipse_m.value];
   const murphy = [murphy_p.value, murphy_m.value];
+
+  let combos = [];
 
   // RAPTOR correcto
   if (
