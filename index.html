@@ -125,7 +125,7 @@ function calcular() {
   );
 
   if (activos.length > 1) {
-    document.getElementById("resultado").textContent =
+    resultado.textContent =
       "⚠️ CRUCE INVÁLIDO\n\n" +
       "Los albinismos NO se combinan entre sí.\n\n" +
       "Detectados:\n" +
@@ -137,59 +137,52 @@ function calcular() {
      FUNCIÓN DE IMPRESIÓN
      ======================= */
   function bloque(nombre, res, padre, madre) {
+    if (!res || !res.resultado) return;
     if (padre === "normal" && madre === "normal") return;
 
     t += nombre + "\n";
 
-    if (res.resultado.normal !== undefined && res.resultado.normal > 0)
-      t += "Normal: " + res.resultado.normal + "%\n";
-
-    if (res.resultado.het !== undefined && res.resultado.het > 0)
-      t += "Het: " + res.resultado.het + "%\n";
-
-    if (res.resultado.visual !== undefined && res.resultado.visual > 0)
-      t += "Visual: " + res.resultado.visual + "%\n";
-
-    if (res.resultado.super !== undefined && res.resultado.super > 0)
-      t += "Super: " + res.resultado.super + "%\n";
-
+    for (const key in res.resultado) {
+      if (res.resultado[key] > 0) {
+        t += key.charAt(0).toUpperCase() + key.slice(1) +
+             ": " + res.resultado[key] + "%\n";
+      }
+    }
     t += "\n";
   }
 
   const tremper = calcularGen("tremper", padre_tremper.value, madre_tremper.value);
+  const bell = calcularGen("bell", padre_bell.value, madre_bell.value);
+  const rain = calcularGen("rainwater", padre_rainwater.value, madre_rainwater.value);
   const eclipse = calcularGen("eclipse", padre_eclipse.value, madre_eclipse.value);
   const mack = calcularGen("mack_snow", padre_mack.value, madre_mack.value);
+  const giant = calcularGen("giant", padre_giant.value, madre_giant.value);
 
   bloque("Tremper", tremper, padre_tremper.value, madre_tremper.value);
+  bloque("Bell", bell, padre_bell.value, madre_bell.value);
+  bloque("Rainwater", rain, padre_rainwater.value, madre_rainwater.value);
   bloque("Eclipse", eclipse, padre_eclipse.value, madre_eclipse.value);
   bloque("Mack Snow", mack, padre_mack.value, madre_mack.value);
+  bloque("Giant", giant, padre_giant.value, madre_giant.value);
 
   /* =======================
-     PASO 3 – DETECCIÓN DE COMBOS
+     PASO 3 – COMBOS
      ======================= */
   let combos = [];
 
   if (
-    tremper.resultado.visual === 100 &&
-    eclipse.resultado.visual === 100
+    tremper?.resultado?.visual === 100 &&
+    eclipse?.resultado?.visual === 100
   ) {
     combos.push("RAPTOR");
   }
 
   if (
-    tremper.resultado.visual === 100 &&
-    eclipse.resultado.visual === 100 &&
-    mack.resultado.super === 100
+    tremper?.resultado?.visual === 100 &&
+    eclipse?.resultado?.visual === 100 &&
+    mack?.resultado?.super === 100
   ) {
-    combos.push("SUPER RAPTOR");
-  }
-
-  if (
-    mack.resultado.super === 100 &&
-    tremper.resultado.visual === 100 &&
-    eclipse.resultado.visual === 100
-  ) {
-    combos.push("DIABLO BLANCO");
+    combos.push("SUPER RAPTOR / DIABLO BLANCO");
   }
 
   if (combos.length > 0) {
@@ -197,8 +190,7 @@ function calcular() {
     combos.forEach(c => t += "- " + c + "\n");
   }
 
-  document.getElementById("resultado").textContent =
-    t || "No hay genes activos en este cruce.";
+  resultado.textContent = t || "No hay genes activos en este cruce.";
 }
 </script>
 
