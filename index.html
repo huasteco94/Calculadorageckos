@@ -6,10 +6,12 @@
 <title>Calculadora Genética Gecko Leopardo</title>
 <style>
 body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; padding:15px; }
-h2,h3 { margin-top:20px; }
+h2,h3,h4 { margin-top:15px; }
 .section { background:#fff; padding:15px; margin-bottom:15px; border-radius:8px; }
-label { display:block; margin:6px 0; }
-select { width:100%; padding:6px; margin-bottom:10px; }
+.gene-box { border-bottom:1px solid #ddd; padding:10px 0; }
+.row { display:flex; gap:10px; }
+.col { flex:1; }
+select { width:100%; padding:6px; }
 .result-block { margin-top:10px; }
 .combo { background:#e8f7e8; padding:10px; border-radius:6px; margin-bottom:8px; }
 .route { background:#fff6e5; padding:10px; border-radius:6px; margin-bottom:8px; }
@@ -22,10 +24,8 @@ select { width:100%; padding:6px; margin-bottom:10px; }
 <h2>Calculadora Genética – Gecko Leopardo</h2>
 
 <div class="section">
-<h3>Padre</h3>
-<div id="father"></div>
-<h3>Madre</h3>
-<div id="mother"></div>
+<h3>Selección genética</h3>
+<div id="genes"></div>
 <button onclick="calculate()">Calcular</button>
 </div>
 
@@ -48,36 +48,53 @@ const combos = [
 ];
 
 // ===================== UI =====================
-function geneSelect(type, gene, parent){
- let opts = ["","het","visual"];
- if(type==="codom") opts = ["","presente","super"];
- if(type==="dom") opts = ["","presente"];
- if(type==="poly") opts = ["","presente"];
+function geneRow(gene, type){
+ let opts = [""];
+ if(type==="rec") opts.push("het","visual");
+ if(type==="codom") opts.push("presente","super");
+ if(type==="dom") opts.push("presente");
+ if(type==="poly") opts.push("presente");
+
  return `
- <label>${gene}
- <select id="${parent}_${gene}">
- ${opts.map(o=>`<option value="${o}">${o}</option>`).join("")}
- </select></label>`;
+ <div class="gene-box">
+   <b>${gene}</b>
+   <div class="row">
+     <div class="col">
+       Padre
+       <select id="father_${gene}">
+         ${opts.map(o=>`<option value="${o}">${o}</option>`).join("")}
+       </select>
+     </div>
+     <div class="col">
+       Madre
+       <select id="mother_${gene}">
+         ${opts.map(o=>`<option value="${o}">${o}</option>`).join("")}
+       </select>
+     </div>
+   </div>
+ </div>`;
 }
 
 function buildUI(){
- ["father","mother"].forEach(p=>{
-  let div=document.getElementById(p);
-  recessives.forEach(g=>div.innerHTML+=geneSelect("rec",g,p));
-  codominants.forEach(g=>div.innerHTML+=geneSelect("codom",g,p));
-  dominants.forEach(g=>div.innerHTML+=geneSelect("dom",g,p));
-  polygenic.forEach(g=>div.innerHTML+=geneSelect("poly",g,p));
- });
+ let g=document.getElementById("genes");
+ g.innerHTML+="<h4>Genes recesivos</h4>";
+ recessives.forEach(x=>g.innerHTML+=geneRow(x,"rec"));
+ g.innerHTML+="<h4>Genes codominantes</h4>";
+ codominants.forEach(x=>g.innerHTML+=geneRow(x,"codom"));
+ g.innerHTML+="<h4>Genes dominantes</h4>";
+ dominants.forEach(x=>g.innerHTML+=geneRow(x,"dom"));
+ g.innerHTML+="<h4>Líneas poligénicas (informativas)</h4>";
+ polygenic.forEach(x=>g.innerHTML+=geneRow(x,"poly"));
 }
 buildUI();
 
 // ===================== CÁLCULO =====================
+function get(p,g){ return document.getElementById(p+"_"+g).value; }
+
 function calculate(){
  let out=document.getElementById("output");
  out.innerHTML="";
  let results={rec:{},cod:{},dom:{},poly:[]};
-
- function get(p,g){ return document.getElementById(p+"_"+g).value; }
 
  recessives.forEach(g=>{
   let f=get("father",g), m=get("mother",g);
@@ -120,21 +137,16 @@ function calculate(){
 function render(r){
  let o=document.getElementById("output");
 
- // Resumen
  let geneCount=Object.keys(r.rec).length+Object.keys(r.cod).length+Object.keys(r.dom).length;
  o.innerHTML+=`<div class="section"><b>Resumen</b><br>
- Genes activos: ${geneCount}<br>
- Combos posibles: ${combos.length}
+ Genes activos: ${geneCount}
  </div>`;
 
- // Resultados
  function block(title,data){
   let html="";
   for(let g in data){
    html+=`<b>${g}</b><br>`;
-   data[g].forEach(x=>{
-    html+=`• ${x[1]}/4 ${x[0]} (${x[1]*25}%)<br>`;
-   });
+   data[g].forEach(x=>html+=`• ${x[1]}/4 ${x[0]} (${x[1]*25}%)<br>`);
    html+="<br>";
   }
   if(html) o.innerHTML+=`<div class="section"><h3>${title}</h3>${html}</div>`;
@@ -144,12 +156,11 @@ function render(r){
  block("Codominantes",r.cod);
  block("Dominantes",r.dom);
 
- // Combos y rutas
  let comboHTML="", routeHTML="";
  combos.forEach(c=>{
   let have=c.genes.filter(g=>r.rec[g]||r.cod[g]||r.dom[g]);
   if(have.length===c.genes.length){
-   comboHTML+=`<div class="combo">✅ ${c.name}<br>Componentes:<br>${c.genes.join("<br>")}</div>`;
+   comboHTML+=`<div class="combo">✅ ${c.name}<br>${c.genes.join("<br>")}</div>`;
   } else if(have.length>=1){
    let missing=c.genes.filter(g=>!have.includes(g));
    routeHTML+=`<div class="route">➜ Ruta a ${c.name}<br>Faltan:<br>${missing.join("<br>")}</div>`;
@@ -159,7 +170,6 @@ function render(r){
  if(comboHTML) o.innerHTML+=`<div class="section"><h3>Combos logrados</h3>${comboHTML}</div>`;
  if(routeHTML) o.innerHTML+=`<div class="section"><h3>Rutas a combos</h3>${routeHTML}</div>`;
 
- // Poligénicos
  if(r.poly.length){
   o.innerHTML+=`<div class="section"><h3>Líneas poligénicas</h3>${r.poly.join("<br>")}
   <div class="small">No influyen en porcentajes genéticos</div></div>`;
