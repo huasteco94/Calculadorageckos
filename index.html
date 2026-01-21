@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora Genética – Gecko Leopardo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+  <h1>Calculadora Genética – Gecko Leopardo</h1>
+
+  <h2>Tremper Albino</h2>
+
+  <label>Padre:</label>
+  <select id="padre_tremper">
+    <option value="normal">Normal</option>
+    <option value="het">Het</option>
+    <option value="visual">Visual</option>
+  </select>
+
+  <br><br>
+
+  <label>Madre:</label>
+  <select id="madre_tremper">
+    <option value="normal">Normal</option>
+    <option value="het">Het</option>
+    <option value="visual">Visual</option>
+  </select>
+
+  <br><br>
+
+  <button onclick="calcular()">Calcular</button>
+
+  <h3>Resultado:</h3>
+  <pre id="resultado"></pre>
+
+  <!-- MOTOR GENÉTICO -->
+  <script src="genetics.js"></script>
+
+  <!-- LÓGICA DE LA PÁGINA -->
+  <script>
+    function calcular() {
+      const padre = document.getElementById("padre_tremper").value;
+      const madre = document.getElementById("madre_tremper").value;
+
+      const res = calcularGen("tremper", padre, madre);
+
+      let texto = "";
+      texto += "Gen: " + res.gen + "\n\n";
+      texto += "Normal: " + res.resultado.normal + "%\n";
+      texto += "Het: " + res.resultado.het + "%\n";
+      texto += "Visual: " + res.resultado.visual + "%\n";
+
+      document.getElementById("resultado").textContent = texto;
+    }
+  </script>
+
+</body>
+</html>
