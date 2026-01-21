@@ -1,196 +1,228 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Calculadora Genética – Gecko Leopardo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Calculadora Genética Gecko Leopardo</title>
+<style>
+body { font-family: Arial, sans-serif; padding: 15px; }
+select, button { margin: 4px 0; width: 100%; }
+.result { white-space: pre-line; margin-top: 15px; }
+h2 { margin-top: 25px; }
+</style>
 </head>
+
 <body>
 
 <h1>Calculadora Genética – Gecko Leopardo</h1>
 
-<h2>Albinismo</h2>
+<h2>Recesivos (estado de los padres)</h2>
 
-<h3>Tremper</h3>
-Padre:
-<select id="padre_tremper">
-  <option value="normal">Normal</option>
-  <option value="het">Het</option>
-  <option value="visual">Visual</option>
-</select>
-Madre:
-<select id="madre_tremper">
-  <option value="normal">Normal</option>
-  <option value="het">Het</option>
-  <option value="visual">Visual</option>
-</select>
+<div id="genes"></div>
 
-<h3>Bell</h3>
-Padre:
-<select id="padre_bell">
-  <option value="normal">Normal</option>
-  <option value="het">Het</option>
-  <option value="visual">Visual</option>
-</select>
-Madre:
-<select id="madre_bell">
-  <option value="normal">Normal</option>
-  <option value="het">Het</option>
-  <option value="visual">Visual</option>
-</select>
-
-<h3>Rainwater</h3>
-Padre:
-<select id="padre_rainwater">
-  <option value="normal">Normal</option>
-  <option value="het">Het</option>
-  <option value="visual">Visual</option>
-</select>
-Madre:
-<select id="madre_rainwater">
-  <option value="normal">Normal</option>
-  <option value="het">Het</option>
-  <option value="visual">Visual</option>
-</select>
-
-<h2>Ojos</h2>
-
-<h3>Eclipse</h3>
-Padre:
-<select id="padre_eclipse">
-  <option value="normal">Normal</option>
-  <option value="het">Het</option>
-  <option value="visual">Visual</option>
-</select>
-Madre:
-<select id="madre_eclipse">
-  <option value="normal">Normal</option>
-  <option value="het">Het</option>
-  <option value="visual">Visual</option>
-</select>
-
-<h2>Codominantes</h2>
-
-<h3>Mack Snow</h3>
-Padre:
-<select id="padre_mack">
-  <option value="normal">Normal</option>
-  <option value="het">Mack Snow</option>
-  <option value="super">Super Mack Snow</option>
-</select>
-Madre:
-<select id="madre_mack">
-  <option value="normal">Normal</option>
-  <option value="het">Mack Snow</option>
-  <option value="super">Super Mack Snow</option>
-</select>
-
-<h3>Giant</h3>
-Padre:
-<select id="padre_giant">
-  <option value="normal">Normal</option>
-  <option value="het">Giant</option>
-  <option value="super">Super Giant</option>
-</select>
-Madre:
-<select id="madre_giant">
-  <option value="normal">Normal</option>
-  <option value="het">Giant</option>
-  <option value="super">Super Giant</option>
-</select>
-
-<br><br>
 <button onclick="calcular()">Calcular</button>
 
-<h2>Resultado</h2>
-<pre id="resultado"></pre>
-
-<script src="genetics.js"></script>
+<div id="resultado" class="result"></div>
 
 <script>
+// ======================
+// CONFIGURACIÓN GENES
+// ======================
+
+const recesivos = [
+  "Tremper Albino",
+  "Bell Albino",
+  "Rainwater Albino",
+  "Eclipse",
+  "Blizzard",
+  "Murphy Patternless"
+];
+
+const dominantes = [
+  "Enigma",
+  "White & Yellow",
+  "Mack Snow",
+  "Super Mack Snow"
+];
+
+// ======================
+// UI DINÁMICA
+// ======================
+
+const geneDiv = document.getElementById("genes");
+
+recesivos.forEach(g => crearSelect(g));
+dominantes.forEach(g => crearSelect(g, true));
+
+function crearSelect(nombre, dom = false) {
+  geneDiv.innerHTML += `
+    <label>${nombre}</label>
+    <select id="${nombre}_padre">
+      ${dom ? opcionesDom() : opcionesRec()}
+    </select>
+    <select id="${nombre}_madre">
+      ${dom ? opcionesDom() : opcionesRec()}
+    </select>
+    <hr>
+  `;
+}
+
+function opcionesRec() {
+  return `
+    <option value="normal">Normal</option>
+    <option value="het">Het</option>
+    <option value="pos50">Pos Het 50%</option>
+    <option value="pos66">Pos Het 66%</option>
+    <option value="visual">Visual</option>
+  `;
+}
+
+function opcionesDom() {
+  return `
+    <option value="ausente">Ausente</option>
+    <option value="presente">Presente</option>
+  `;
+}
+
+// ======================
+// LÓGICA GENÉTICA
+// ======================
+
+function estadoRecesivo(p, m) {
+  if (p === "visual" && m === "visual") return { visual: 100 };
+  if ((p === "visual" && m === "het") || (p === "het" && m === "visual"))
+    return { visual: 50, het: 50 };
+  if (p === "het" && m === "het")
+    return { visual: 25, het: 50, normal: 25 };
+  if ((p === "visual" && m === "normal") || (p === "normal" && m === "visual"))
+    return { het: 100 };
+  if ((p === "het" && m === "normal") || (p === "normal" && m === "het"))
+    return { pos50: 50 };
+  if (p === "pos66" || m === "pos66")
+    return { pos66: 66 };
+  return { normal: 100 };
+}
+
+// ======================
+// COMBOS DEFINIDOS
+// ======================
+
+const combos = [
+  { nombre:"BEE", alias:["Black Eyed Enigma"],
+    requiere:{ "Enigma":"presente", "Eclipse":"visual" } },
+
+  { nombre:"Black Hole",
+    requiere:{ "Mack Snow":"presente", "Enigma":"presente", "Eclipse":"visual" } },
+
+  { nombre:"Total Eclipse", alias:["Galaxy"],
+    requiere:{ "Super Mack Snow":"presente", "Eclipse":"visual" } },
+
+  { nombre:"Universe",
+    requiere:{ "Super Mack Snow":"presente", "Eclipse":"visual", "White & Yellow":"presente" } },
+
+  { nombre:"Banana Blizzard",
+    requiere:{ "Murphy Patternless":"visual", "Blizzard":"visual" } },
+
+  { nombre:"Super Platinum",
+    requiere:{ "Super Mack Snow":"presente", "Murphy Patternless":"visual" } },
+
+  { nombre:"RAPTOR",
+    requiere:{ "Tremper Albino":"visual", "Eclipse":"visual", "Murphy Patternless":"visual" } },
+
+  { nombre:"Ember",
+    requiere:{ "Tremper Albino":"visual", "Eclipse":"visual", "Murphy Patternless":"visual" } },
+
+  { nombre:"Snowflake", alias:["Snow Ember"],
+    requiere:{ "Mack Snow":"presente", "Tremper Albino":"visual", "Eclipse":"visual", "Murphy Patternless":"visual" } },
+
+  { nombre:"Blazing Blizzard",
+    requiere:{ "Tremper Albino":"visual", "Blizzard":"visual" } },
+
+  { nombre:"Diablo Blanco",
+    requiere:{ "Tremper Albino":"visual", "Blizzard":"visual", "Eclipse":"visual" },
+    advertencia:"Eclipse puede quedar oculto por Blizzard" },
+
+  { nombre:"Nova",
+    requiere:{ "Tremper Albino":"visual", "Eclipse":"visual", "Enigma":"presente" } },
+
+  { nombre:"Super Nova",
+    requiere:{ "Super Mack Snow":"presente", "Tremper Albino":"visual", "Eclipse":"visual", "Enigma":"presente" } },
+
+  { nombre:"Dreamsickle",
+    requiere:{ "Mack Snow":"presente", "Tremper Albino":"visual", "Eclipse":"visual", "Enigma":"presente" } },
+
+  { nombre:"Radar",
+    requiere:{ "Bell Albino":"visual", "Eclipse":"visual" } },
+
+  { nombre:"Stealth",
+    requiere:{ "Mack Snow":"presente", "Enigma":"presente", "Bell Albino":"visual", "Eclipse":"visual" } },
+
+  { nombre:"Super Stealth",
+    requiere:{ "Super Mack Snow":"presente", "Enigma":"presente", "Bell Albino":"visual", "Eclipse":"visual" } },
+
+  { nombre:"White Knight",
+    requiere:{ "Bell Albino":"visual", "Blizzard":"visual", "Eclipse":"visual" },
+    advertencia:"Eclipse puede quedar oculto por Blizzard" },
+
+  { nombre:"Typhoon",
+    requiere:{ "Rainwater Albino":"visual", "Eclipse":"visual" } },
+
+  { nombre:"Cyclone",
+    requiere:{ "Rainwater Albino":"visual", "Eclipse":"visual", "Murphy Patternless":"visual" } }
+];
+
+// ======================
+// CÁLCULO FINAL
+// ======================
+
 function calcular() {
-  let t = "";
+  let salida = "RESULTADOS GENÉTICOS\n\n";
 
-  /* =======================
-     PASO 2 – VALIDACIÓN ALBINISMO
-     ======================= */
-  const albinismos = [
-    { nombre: "Tremper", padre: padre_tremper.value, madre: madre_tremper.value },
-    { nombre: "Bell", padre: padre_bell.value, madre: madre_bell.value },
-    { nombre: "Rainwater", padre: padre_rainwater.value, madre: madre_rainwater.value }
-  ];
+  const estadoGenes = {};
 
-  const activos = albinismos.filter(a =>
-    a.padre !== "normal" || a.madre !== "normal"
-  );
+  recesivos.forEach(g => {
+    const p = document.getElementById(g+"_padre").value;
+    const m = document.getElementById(g+"_madre").value;
+    estadoGenes[g] = estadoRecesivo(p, m);
+    salida += `${g}: ${JSON.stringify(estadoGenes[g])}\n`;
+  });
 
-  if (activos.length > 1) {
-    resultado.textContent =
-      "⚠️ CRUCE INVÁLIDO\n\n" +
-      "Los albinismos NO se combinan entre sí.\n\n" +
-      "Detectados:\n" +
-      activos.map(a => "- " + a.nombre).join("\n");
-    return;
-  }
+  dominantes.forEach(g => {
+    const p = document.getElementById(g+"_padre").value;
+    const m = document.getElementById(g+"_madre").value;
+    estadoGenes[g] = (p === "presente" || m === "presente") ? "presente" : "ausente";
+  });
 
-  /* =======================
-     FUNCIÓN DE IMPRESIÓN
-     ======================= */
-  function bloque(nombre, res, padre, madre) {
-    if (!res || !res.resultado) return;
-    if (padre === "normal" && madre === "normal") return;
+  salida += "\nCOMBOS DETECTADOS:\n";
 
-    t += nombre + "\n";
+  combos.forEach(c => {
+    let cumple = true;
+    let faltan = [];
 
-    for (const key in res.resultado) {
-      if (res.resultado[key] > 0) {
-        t += key.charAt(0).toUpperCase() + key.slice(1) +
-             ": " + res.resultado[key] + "%\n";
+    for (let g in c.requiere) {
+      if (c.requiere[g] === "visual") {
+        if (!estadoGenes[g] || !estadoGenes[g].visual) {
+          cumple = false;
+          faltan.push(g);
+        }
+      } else {
+        if (estadoGenes[g] !== "presente") {
+          cumple = false;
+          faltan.push(g);
+        }
       }
     }
-    t += "\n";
-  }
 
-  const tremper = calcularGen("tremper", padre_tremper.value, madre_tremper.value);
-  const bell = calcularGen("bell", padre_bell.value, madre_bell.value);
-  const rain = calcularGen("rainwater", padre_rainwater.value, madre_rainwater.value);
-  const eclipse = calcularGen("eclipse", padre_eclipse.value, madre_eclipse.value);
-  const mack = calcularGen("mack_snow", padre_mack.value, madre_mack.value);
-  const giant = calcularGen("giant", padre_giant.value, madre_giant.value);
+    if (cumple) {
+      salida += `✅ ${c.nombre}`;
+      if (c.alias) salida += ` (${c.alias.join(", ")})`;
+      salida += "\n";
+      if (c.advertencia) salida += `⚠️ ${c.advertencia}\n`;
+    } else if (faltan.length < Object.keys(c.requiere).length) {
+      salida += `⚠️ Ruta a ${c.nombre} — falta: ${faltan.join(", ")}\n`;
+    }
+  });
 
-  bloque("Tremper", tremper, padre_tremper.value, madre_tremper.value);
-  bloque("Bell", bell, padre_bell.value, madre_bell.value);
-  bloque("Rainwater", rain, padre_rainwater.value, madre_rainwater.value);
-  bloque("Eclipse", eclipse, padre_eclipse.value, madre_eclipse.value);
-  bloque("Mack Snow", mack, padre_mack.value, madre_mack.value);
-  bloque("Giant", giant, padre_giant.value, madre_giant.value);
-
-  /* =======================
-     PASO 3 – COMBOS
-     ======================= */
-  let combos = [];
-
-  if (
-    tremper?.resultado?.visual === 100 &&
-    eclipse?.resultado?.visual === 100
-  ) {
-    combos.push("RAPTOR");
-  }
-
-  if (
-    tremper?.resultado?.visual === 100 &&
-    eclipse?.resultado?.visual === 100 &&
-    mack?.resultado?.super === 100
-  ) {
-    combos.push("SUPER RAPTOR / DIABLO BLANCO");
-  }
-
-  if (combos.length > 0) {
-    t += "COMBOS DETECTADOS\n";
-    combos.forEach(c => t += "- " + c + "\n");
-  }
-
-  resultado.textContent = t || "No hay genes activos en este cruce.";
+  document.getElementById("resultado").textContent = salida;
 }
 </script>
 
