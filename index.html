@@ -15,7 +15,7 @@ h2 { margin-top: 25px; }
 
 <h1>Calculadora Genética – Gecko Leopardo</h1>
 
-<h2>Recesivos (estado de los padres)</h2>
+<h2>Genética de los padres</h2>
 
 <div id="genes"></div>
 
@@ -25,42 +25,42 @@ h2 { margin-top: 25px; }
 
 <script>
 // ======================
-// CONFIGURACIÓN GENES
+// DEFINICIÓN DE GENES
 // ======================
 
 const recesivos = [
-  "Tremper Albino",
-  "Bell Albino",
-  "Rainwater Albino",
-  "Eclipse",
-  "Blizzard",
-  "Murphy Patternless"
+  { key:"tremper", label:"Tremper Albino" },
+  { key:"bell", label:"Bell Albino" },
+  { key:"rainwater", label:"Rainwater Albino" },
+  { key:"eclipse", label:"Eclipse" },
+  { key:"blizzard", label:"Blizzard" },
+  { key:"murphy", label:"Murphy Patternless" }
 ];
 
 const dominantes = [
-  "Enigma",
-  "White & Yellow",
-  "Mack Snow",
-  "Super Mack Snow"
+  { key:"enigma", label:"Enigma" },
+  { key:"wy", label:"White & Yellow" },
+  { key:"mack", label:"Mack Snow" },
+  { key:"supermack", label:"Super Mack Snow" }
 ];
 
 // ======================
-// UI DINÁMICA
+// UI
 // ======================
 
 const geneDiv = document.getElementById("genes");
 
-recesivos.forEach(g => crearSelect(g));
+recesivos.forEach(g => crearSelect(g, false));
 dominantes.forEach(g => crearSelect(g, true));
 
-function crearSelect(nombre, dom = false) {
+function crearSelect(gen, dominante) {
   geneDiv.innerHTML += `
-    <label>${nombre}</label>
-    <select id="${nombre}_padre">
-      ${dom ? opcionesDom() : opcionesRec()}
+    <label><strong>${gen.label}</strong></label>
+    <select id="${gen.key}_padre">
+      ${dominante ? opcionesDom() : opcionesRec()}
     </select>
-    <select id="${nombre}_madre">
-      ${dom ? opcionesDom() : opcionesRec()}
+    <select id="${gen.key}_madre">
+      ${dominante ? opcionesDom() : opcionesRec()}
     </select>
     <hr>
   `;
@@ -70,8 +70,6 @@ function opcionesRec() {
   return `
     <option value="normal">Normal</option>
     <option value="het">Het</option>
-    <option value="pos50">Pos Het 50%</option>
-    <option value="pos66">Pos Het 66%</option>
     <option value="visual">Visual</option>
   `;
 }
@@ -84,141 +82,78 @@ function opcionesDom() {
 }
 
 // ======================
-// LÓGICA GENÉTICA
+// GENÉTICA
 // ======================
 
-function estadoRecesivo(p, m) {
-  if (p === "visual" && m === "visual") return { visual: 100 };
+function calcRecesivo(p, m) {
+  if (p === "visual" && m === "visual") return { visual:100 };
   if ((p === "visual" && m === "het") || (p === "het" && m === "visual"))
-    return { visual: 50, het: 50 };
+    return { visual:50, het:50 };
   if (p === "het" && m === "het")
-    return { visual: 25, het: 50, normal: 25 };
+    return { visual:25, het:50, normal:25 };
   if ((p === "visual" && m === "normal") || (p === "normal" && m === "visual"))
-    return { het: 100 };
-  if ((p === "het" && m === "normal") || (p === "normal" && m === "het"))
-    return { pos50: 50 };
-  if (p === "pos66" || m === "pos66")
-    return { pos66: 66 };
-  return { normal: 100 };
+    return { het:100 };
+  return { normal:100 };
 }
 
 // ======================
-// COMBOS DEFINIDOS
+// COMBOS (Mendelianos)
 // ======================
 
 const combos = [
-  { nombre:"BEE", alias:["Black Eyed Enigma"],
-    requiere:{ "Enigma":"presente", "Eclipse":"visual" } },
-
-  { nombre:"Black Hole",
-    requiere:{ "Mack Snow":"presente", "Enigma":"presente", "Eclipse":"visual" } },
-
-  { nombre:"Total Eclipse", alias:["Galaxy"],
-    requiere:{ "Super Mack Snow":"presente", "Eclipse":"visual" } },
-
-  { nombre:"Universe",
-    requiere:{ "Super Mack Snow":"presente", "Eclipse":"visual", "White & Yellow":"presente" } },
-
-  { nombre:"Banana Blizzard",
-    requiere:{ "Murphy Patternless":"visual", "Blizzard":"visual" } },
-
-  { nombre:"Super Platinum",
-    requiere:{ "Super Mack Snow":"presente", "Murphy Patternless":"visual" } },
-
-  { nombre:"RAPTOR",
-    requiere:{ "Tremper Albino":"visual", "Eclipse":"visual", "Murphy Patternless":"visual" } },
-
-  { nombre:"Ember",
-    requiere:{ "Tremper Albino":"visual", "Eclipse":"visual", "Murphy Patternless":"visual" } },
-
-  { nombre:"Snowflake", alias:["Snow Ember"],
-    requiere:{ "Mack Snow":"presente", "Tremper Albino":"visual", "Eclipse":"visual", "Murphy Patternless":"visual" } },
-
-  { nombre:"Blazing Blizzard",
-    requiere:{ "Tremper Albino":"visual", "Blizzard":"visual" } },
-
-  { nombre:"Diablo Blanco",
-    requiere:{ "Tremper Albino":"visual", "Blizzard":"visual", "Eclipse":"visual" },
+  { nombre:"RAPTOR", requiere:{ tremper:"visual", eclipse:"visual", murphy:"visual" }},
+  { nombre:"Diablo Blanco", requiere:{ tremper:"visual", blizzard:"visual", eclipse:"visual" },
     advertencia:"Eclipse puede quedar oculto por Blizzard" },
-
-  { nombre:"Nova",
-    requiere:{ "Tremper Albino":"visual", "Eclipse":"visual", "Enigma":"presente" } },
-
-  { nombre:"Super Nova",
-    requiere:{ "Super Mack Snow":"presente", "Tremper Albino":"visual", "Eclipse":"visual", "Enigma":"presente" } },
-
-  { nombre:"Dreamsickle",
-    requiere:{ "Mack Snow":"presente", "Tremper Albino":"visual", "Eclipse":"visual", "Enigma":"presente" } },
-
-  { nombre:"Radar",
-    requiere:{ "Bell Albino":"visual", "Eclipse":"visual" } },
-
-  { nombre:"Stealth",
-    requiere:{ "Mack Snow":"presente", "Enigma":"presente", "Bell Albino":"visual", "Eclipse":"visual" } },
-
-  { nombre:"Super Stealth",
-    requiere:{ "Super Mack Snow":"presente", "Enigma":"presente", "Bell Albino":"visual", "Eclipse":"visual" } },
-
-  { nombre:"White Knight",
-    requiere:{ "Bell Albino":"visual", "Blizzard":"visual", "Eclipse":"visual" },
-    advertencia:"Eclipse puede quedar oculto por Blizzard" },
-
-  { nombre:"Typhoon",
-    requiere:{ "Rainwater Albino":"visual", "Eclipse":"visual" } },
-
-  { nombre:"Cyclone",
-    requiere:{ "Rainwater Albino":"visual", "Eclipse":"visual", "Murphy Patternless":"visual" } }
+  { nombre:"Nova", requiere:{ tremper:"visual", eclipse:"visual", enigma:"presente" }},
+  { nombre:"Radar", requiere:{ bell:"visual", eclipse:"visual" }},
+  { nombre:"Typhoon", requiere:{ rainwater:"visual", eclipse:"visual" }},
+  { nombre:"Universe", requiere:{ supermack:"presente", eclipse:"visual", wy:"presente" }}
 ];
 
 // ======================
-// CÁLCULO FINAL
+// CÁLCULO
 // ======================
 
 function calcular() {
-  let salida = "RESULTADOS GENÉTICOS\n\n";
-
-  const estadoGenes = {};
+  let salida = "RESULTADOS\n\n";
+  const estado = {};
 
   recesivos.forEach(g => {
-    const p = document.getElementById(g+"_padre").value;
-    const m = document.getElementById(g+"_madre").value;
-    estadoGenes[g] = estadoRecesivo(p, m);
-    salida += `${g}: ${JSON.stringify(estadoGenes[g])}\n`;
+    const p = document.getElementById(g.key+"_padre").value;
+    const m = document.getElementById(g.key+"_madre").value;
+    estado[g.key] = calcRecesivo(p, m);
+    salida += `${g.label}: ${JSON.stringify(estado[g.key])}\n`;
   });
 
   dominantes.forEach(g => {
-    const p = document.getElementById(g+"_padre").value;
-    const m = document.getElementById(g+"_madre").value;
-    estadoGenes[g] = (p === "presente" || m === "presente") ? "presente" : "ausente";
+    const p = document.getElementById(g.key+"_padre").value;
+    const m = document.getElementById(g.key+"_madre").value;
+    estado[g.key] = (p === "presente" || m === "presente") ? "presente" : "ausente";
   });
 
-  salida += "\nCOMBOS DETECTADOS:\n";
+  salida += "\nCOMBOS:\n";
 
   combos.forEach(c => {
-    let cumple = true;
+    let ok = true;
     let faltan = [];
 
     for (let g in c.requiere) {
       if (c.requiere[g] === "visual") {
-        if (!estadoGenes[g] || !estadoGenes[g].visual) {
-          cumple = false;
-          faltan.push(g);
+        if (!estado[g] || !estado[g].visual) {
+          ok = false; faltan.push(g);
         }
       } else {
-        if (estadoGenes[g] !== "presente") {
-          cumple = false;
-          faltan.push(g);
+        if (estado[g] !== "presente") {
+          ok = false; faltan.push(g);
         }
       }
     }
 
-    if (cumple) {
-      salida += `✅ ${c.nombre}`;
-      if (c.alias) salida += ` (${c.alias.join(", ")})`;
-      salida += "\n";
+    if (ok) {
+      salida += `✅ ${c.nombre}\n`;
       if (c.advertencia) salida += `⚠️ ${c.advertencia}\n`;
     } else if (faltan.length < Object.keys(c.requiere).length) {
-      salida += `⚠️ Ruta a ${c.nombre} — falta: ${faltan.join(", ")}\n`;
+      salida += `↪ Ruta a ${c.nombre} (falta: ${faltan.join(", ")})\n`;
     }
   });
 
