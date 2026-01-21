@@ -1,136 +1,247 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Calculadora Genética – Gecko Leopardo</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    h2 { margin-top: 30px; }
-    .gene {
-      display: grid;
-      grid-template-columns: 180px 1fr 1fr;
-      gap: 10px;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-    .gene strong { font-size: 14px; }
-    label { font-size: 12px; color: #555; }
-    select { width: 100%; }
-    button { margin-top: 20px; padding: 10px 20px; }
-    #resultados { margin-top: 30px; }
-  </style>
+<meta charset="UTF-8">
+<title>Calculadora Genética – Gecko Leopardo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background:#f4f4f4;
+  padding:15px;
+}
+h1,h2,h3 { margin-top:25px; }
+.section {
+  background:#fff;
+  padding:15px;
+  border-radius:8px;
+  margin-bottom:20px;
+}
+.gene {
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap:10px;
+  align-items:center;
+  margin-bottom:8px;
+}
+.gene strong { font-size:14px; }
+label { font-size:11px; color:#555; }
+select { width:100%; }
+button {
+  width:100%;
+  padding:12px;
+  font-size:16px;
+  margin-top:10px;
+}
+.result {
+  background:#eee;
+  padding:8px;
+  border-radius:6px;
+  margin-bottom:6px;
+}
+.small { font-size:12px; color:#555; }
+</style>
 </head>
+
 <body>
 
 <h1>Calculadora Genética – Gecko Leopardo</h1>
 
+<!-- =================== SEXO =================== -->
+<div class="section">
+<h2>Ejemplares</h2>
+<div class="gene">
+  <strong>Sexo</strong>
+  <select id="sexo_p">
+    <option value="">Macho</option>
+  </select>
+  <select id="sexo_m">
+    <option value="">Hembra</option>
+  </select>
+</div>
+</div>
+
+<!-- =================== RECESIVOS =================== -->
+<div class="section">
 <h2>Genes Recesivos</h2>
 
-<div class="gene">
-  <strong>Tremper Albino</strong>
-  <div>
-    <label>Padre</label>
-    <select id="tremper_p"><option value=""></option><option>het</option><option>visual</option></select>
-  </div>
-  <div>
-    <label>Madre</label>
-    <select id="tremper_m"><option value=""></option><option>het</option><option>visual</option></select>
-  </div>
+<div class="gene"><strong>Tremper Albino</strong>
+<select id="tremper_p"><option value=""></option><option>het</option><option>visual</option></select>
+<select id="tremper_m"><option value=""></option><option>het</option><option>visual</option></select></div>
+
+<div class="gene"><strong>Bell Albino</strong>
+<select id="bell_p"><option value=""></option><option>het</option><option>visual</option></select>
+<select id="bell_m"><option value=""></option><option>het</option><option>visual</option></select></div>
+
+<div class="gene"><strong>Rainwater Albino</strong>
+<select id="rain_p"><option value=""></option><option>het</option><option>visual</option></select>
+<select id="rain_m"><option value=""></option><option>het</option><option>visual</option></select></div>
+
+<div class="gene"><strong>Eclipse</strong>
+<select id="eclipse_p"><option value=""></option><option>het</option><option>visual</option></select>
+<select id="eclipse_m"><option value=""></option><option>het</option><option>visual</option></select></div>
+
+<div class="gene"><strong>Blizzard</strong>
+<select id="blizzard_p"><option value=""></option><option>het</option><option>visual</option></select>
+<select id="blizzard_m"><option value=""></option><option>het</option><option>visual</option></select></div>
+
+<div class="gene"><strong>Murphy Patternless</strong>
+<select id="murphy_p"><option value=""></option><option>het</option><option>visual</option></select>
+<select id="murphy_m"><option value=""></option><option>het</option><option>visual</option></select></div>
 </div>
 
-<div class="gene">
-  <strong>Eclipse</strong>
-  <div>
-    <label>Padre</label>
-    <select id="eclipse_p"><option value=""></option><option>het</option><option>visual</option></select>
-  </div>
-  <div>
-    <label>Madre</label>
-    <select id="eclipse_m"><option value=""></option><option>het</option><option>visual</option></select>
-  </div>
+<!-- =================== CODOMINANTES =================== -->
+<div class="section">
+<h2>Genes Codominantes</h2>
+
+<div class="gene"><strong>Mack Snow</strong>
+<select id="mack_p"><option value=""></option><option>presente</option><option>super</option></select>
+<select id="mack_m"><option value=""></option><option>presente</option><option>super</option></select></div>
+
+<div class="gene"><strong>Giant</strong>
+<select id="giant_p"><option value=""></option><option>giant</option><option>super giant</option></select>
+<select id="giant_m"><option value=""></option><option>giant</option><option>super giant</option></select></div>
 </div>
 
-<div class="gene">
-  <strong>Murphy Patternless</strong>
-  <div>
-    <label>Padre</label>
-    <select id="murphy_p"><option value=""></option><option>het</option><option>visual</option></select>
-  </div>
-  <div>
-    <label>Madre</label>
-    <select id="murphy_m"><option value=""></option><option>het</option><option>visual</option></select>
-  </div>
+<!-- =================== DOMINANTES =================== -->
+<div class="section">
+<h2>Genes Dominantes</h2>
+
+<div class="gene"><strong>Enigma</strong>
+<select id="enigma_p"><option value=""></option><option>presente</option></select>
+<select id="enigma_m"><option value=""></option><option>presente</option></select></div>
+
+<div class="gene"><strong>White & Yellow</strong>
+<select id="wy_p"><option value=""></option><option>presente</option></select>
+<select id="wy_m"><option value=""></option><option>presente</option></select></div>
 </div>
 
-<h2>Codominantes</h2>
+<!-- =================== POLIGÉNICOS =================== -->
+<div class="section">
+<h2>Líneas Poligénicas (informativas)</h2>
 
-<div class="gene">
-  <strong>Mack Snow</strong>
-  <div>
-    <label>Padre</label>
-    <select id="mack_p"><option value=""></option><option>presente</option><option>super</option></select>
-  </div>
-  <div>
-    <label>Madre</label>
-    <select id="mack_m"><option value=""></option><option>presente</option><option>super</option></select>
-  </div>
-</div>
+<div class="gene"><strong>Mandarin / Tangerine</strong>
+<select id="mandarin_p"><option value=""></option><option>presente</option></select>
+<select id="mandarin_m"><option value=""></option><option>presente</option></select></div>
 
-<div class="gene">
-  <strong>Giant</strong>
-  <div>
-    <label>Padre</label>
-    <select id="giant_p"><option value=""></option><option>giant</option><option>super giant</option></select>
-  </div>
-  <div>
-    <label>Madre</label>
-    <select id="giant_m"><option value=""></option><option>giant</option><option>super giant</option></select>
-  </div>
-</div>
+<div class="gene"><strong>Blood Line</strong>
+<select id="blood_p"><option value=""></option><option>presente</option></select>
+<select id="blood_m"><option value=""></option><option>presente</option></select></div>
 
-<h2>Dominantes</h2>
-
-<div class="gene">
-  <strong>Enigma</strong>
-  <div>
-    <label>Padre</label>
-    <select id="enigma_p"><option value=""></option><option>presente</option></select>
-  </div>
-  <div>
-    <label>Madre</label>
-    <select id="enigma_m"><option value=""></option><option>presente</option></select>
-  </div>
+<div class="gene"><strong>Tornado</strong>
+<select id="tornado_p"><option value=""></option><option>presente</option></select>
+<select id="tornado_m"><option value=""></option><option>presente</option></select></div>
 </div>
 
 <button onclick="calcular()">Calcular Cruce</button>
 
+<div class="section">
+<h2>Resultados</h2>
 <div id="resultados"></div>
 
+<h2>Combos</h2>
+<div id="combos"></div>
+
+<h2>Líneas Poligénicas Detectadas</h2>
+<div id="poly"></div>
+</div>
+
 <script>
-function calcular() {
-  const tremper = [tremper_p.value, tremper_m.value];
-  const eclipse = [eclipse_p.value, eclipse_m.value];
-  const murphy = [murphy_p.value, murphy_m.value];
+// ================= UTILIDADES =================
+function frac(p){
+  return p===100?"4/4":p===75?"3/4":p===50?"2/4":p===25?"1/4":"";
+}
 
-  let combos = [];
+function recCalc(p,m){
+  if(p==="visual" && m==="visual") return {v:100};
+  if((p==="visual"&&m==="het")||(p==="het"&&m==="visual")) return {v:50,h:50};
+  if(p==="het"&&m==="het") return {v:25,h:50};
+  if((p==="visual"&&m==="")||(p===""&&m==="visual")) return {h:100};
+  if((p==="het"&&m==="")||(p===""&&m==="het")) return {h:50};
+  return {};
+}
 
-  // RAPTOR correcto
-  if (
-    tremper.includes("visual") &&
-    eclipse.includes("visual") &&
-    murphy.includes("visual")
-  ) {
-    combos.push("RAPTOR (Tremper + Eclipse + Murphy Patternless) – 100%");
+// ================= COMBOS =================
+const combosDef = [
+ {nombre:"RAPTOR", req:["tremper","eclipse","murphy"]},
+ {nombre:"Diablo Blanco", req:["tremper","blizzard","eclipse"]},
+ {nombre:"Radar", req:["bell","eclipse"]},
+ {nombre:"Typhoon", req:["rain","eclipse"]},
+ {nombre:"Universe", req:["supermack","eclipse","wy"]},
+ {nombre:"Nova", req:["tremper","eclipse","enigma"]}
+];
+
+function calcular(){
+  const genesRec = ["tremper","bell","rain","eclipse","blizzard","murphy"];
+  const genesPresentes = {};
+  const resDiv = document.getElementById("resultados");
+  const comboDiv = document.getElementById("combos");
+  const polyDiv = document.getElementById("poly");
+
+  resDiv.innerHTML=""; comboDiv.innerHTML=""; polyDiv.innerHTML="";
+
+  // ===== RECESIVOS =====
+  genesRec.forEach(g=>{
+    const p=document.getElementById(g+"_p").value;
+    const m=document.getElementById(g+"_m").value;
+    const r=recCalc(p,m);
+    if(Object.keys(r).length){
+      let txt="";
+      if(r.v){ txt+=`• ${frac(r.v)} Visual (${r.v}%)<br>`; genesPresentes[g]=r.v; }
+      if(r.h){ txt+=`• ${frac(r.h)} Het (${r.h}%)<br>`; }
+      resDiv.innerHTML+=`<div class="result"><b>${g.toUpperCase()}</b><br>${txt}</div>`;
+    }
+  });
+
+  // ===== CODOMINANTES =====
+  if(mack_p.value||mack_m.value){
+    if(mack_p.value==="super"||mack_m.value==="super"){
+      resDiv.innerHTML+=`<div class="result"><b>MACK SNOW</b><br>• Super presente</div>`;
+      genesPresentes.supermack=100;
+    }else{
+      resDiv.innerHTML+=`<div class="result"><b>MACK SNOW</b><br>• Presente</div>`;
+      genesPresentes.mack=50;
+    }
   }
 
-  const res = document.getElementById("resultados");
-  res.innerHTML = "<h2>Resultados</h2>";
-
-  if (combos.length === 0) {
-    res.innerHTML += "<p>No se detectaron combos completos.</p>";
-  } else {
-    res.innerHTML += "<ul>" + combos.map(c => `<li>${c}</li>`).join("") + "</ul>";
+  if(giant_p.value||giant_m.value){
+    const gtxt = (giant_p.value==="super giant"||giant_m.value==="super giant")
+      ?"• Super Giant"
+      :"• Giant";
+    resDiv.innerHTML+=`<div class="result"><b>GIANT</b><br>${gtxt}</div>`;
   }
+
+  // ===== DOMINANTES =====
+  if(enigma_p.value||enigma_m.value){
+    resDiv.innerHTML+=`<div class="result"><b>ENIGMA</b><br>• Presente</div>`;
+    genesPresentes.enigma=50;
+  }
+  if(wy_p.value||wy_m.value){
+    resDiv.innerHTML+=`<div class="result"><b>WHITE & YELLOW</b><br>• Presente</div>`;
+    genesPresentes.wy=50;
+  }
+
+  // ===== COMBOS =====
+  combosDef.forEach(cb=>{
+    let ok=true,prob=1,faltan=[];
+    cb.req.forEach(r=>{
+      if(!genesPresentes[r]){ok=false;faltan.push(r);}
+      else prob*=genesPresentes[r]/100;
+    });
+    if(ok){
+      comboDiv.innerHTML+=`<div class="result">✔ <b>${cb.nombre}</b> – ${frac(prob*100)} (${Math.round(prob*100)}%)</div>`;
+    }else{
+      comboDiv.innerHTML+=`<div class="result">➜ Ruta a <b>${cb.nombre}</b> (faltan: ${faltan.join(", ")})</div>`;
+    }
+  });
+
+  // ===== POLIGÉNICOS =====
+  [["mandarin","Mandarin"],["blood","Blood"],["tornado","Tornado"]].forEach(p=>{
+    if(document.getElementById(p[0]+"_p").value || document.getElementById(p[0]+"_m").value){
+      polyDiv.innerHTML+=`<div class="result">🟠 ${p[1]} presente – influencia estética (no medible)</div>`;
+    }
+  });
 }
 </script>
 
