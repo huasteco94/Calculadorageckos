@@ -5,170 +5,137 @@
 <title>Calculadora Genética – Gecko Leopardo</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body { font-family: Arial; background:#f5f5f5; padding:15px; }
-h1 { text-align:center; }
-.section { background:#fff; padding:12px; margin-bottom:15px; border-radius:8px; }
-.row { display:flex; gap:10px; }
-.row select { flex:1; }
-label { margin-top:8px; display:block; }
-button { width:100%; padding:12px; font-size:16px; }
-.result { background:#eee; padding:8px; margin-top:6px; border-radius:6px; }
+body{font-family:Arial;background:#f5f5f5;padding:15px}
+.section{background:#fff;padding:12px;margin-bottom:15px;border-radius:8px}
+.row{display:flex;gap:10px}
+.row select{flex:1}
+.result{background:#eee;padding:8px;margin-top:6px;border-radius:6px}
+button{width:100%;padding:12px;font-size:16px}
 </style>
 </head>
 
 <body>
 
-<h1>Calculadora Genética – Gecko Leopardo</h1>
+<h2>Calculadora Genética – Gecko Leopardo</h2>
 
-<div class="section">
-<h3>Genes Recesivos</h3>
-
-<script>
-const recesivos = [
- ["tremper","Tremper Albino"],
- ["bell","Bell Albino"],
- ["rainwater","Rainwater Albino"],
- ["eclipse","Eclipse"],
- ["blizzard","Blizzard"],
- ["murphy","Murphy Patternless"]
-];
-
-document.write(
-  recesivos.map(g => `
-  <label>${g[1]}</label>
-  <div class="row">
-    <select id="${g[0]}_p">
-      <option value="normal">Padre</option>
-      <option value="het">Het</option>
-      <option value="visual">Visual</option>
-    </select>
-    <select id="${g[0]}_m">
-      <option value="normal">Madre</option>
-      <option value="het">Het</option>
-      <option value="visual">Visual</option>
-    </select>
-  </div>
-`).join("")
-);
-</script>
-</div>
-
-<div class="section">
-<h3>Genes Codominantes</h3>
-
-<label>Mack Snow</label>
-<div class="row">
-<select id="mack_p">
-<option value="ausente">Padre</option>
-<option value="mack">Mack</option>
-<option value="super">Super</option>
-</select>
-<select id="mack_m">
-<option value="ausente">Madre</option>
-<option value="mack">Mack</option>
-<option value="super">Super</option>
-</select>
-</div>
-
-<label>Giant</label>
-<div class="row">
-<select id="giant_p">
-<option value="ausente">Padre</option>
-<option value="giant">Giant</option>
-<option value="super">Super</option>
-</select>
-<select id="giant_m">
-<option value="ausente">Madre</option>
-<option value="giant">Giant</option>
-<option value="super">Super</option>
-</select>
-</div>
-</div>
-
-<div class="section">
-<h3>Genes Dominantes</h3>
-
-<label>Enigma</label>
-<div class="row">
-<select id="enigma_p">
-<option value="ausente">Padre</option>
-<option value="present">Presente</option>
-</select>
-<select id="enigma_m">
-<option value="ausente">Madre</option>
-<option value="present">Presente</option>
-</select>
-</div>
-
-<label>White & Yellow</label>
-<div class="row">
-<select id="wy_p">
-<option value="ausente">Padre</option>
-<option value="present">Presente</option>
-</select>
-<select id="wy_m">
-<option value="ausente">Madre</option>
-<option value="present">Presente</option>
-</select>
-</div>
-</div>
+<div class="section" id="genes"></div>
 
 <button onclick="calcular()">Calcular Cruce</button>
 
 <div class="section">
 <h3>Resultados</h3>
 <div id="resultados"></div>
+<h3>Combos</h3>
+<div id="combos"></div>
 </div>
 
 <script>
-function calcRecesivo(p, m) {
-  if (p==="visual" && m==="visual") return {visual:100};
-  if ((p==="visual" && m==="het") || (p==="het" && m==="visual"))
-    return {visual:50, het:50};
-  if (p==="het" && m==="het") return {visual:25, het:50};
-  if ((p==="visual" && m==="normal") || (p==="normal" && m==="visual"))
-    return {het:100};
-  if ((p==="het" && m==="normal") || (p==="normal" && m==="het"))
-    return {het:50};
-  return {};
+const genes = [
+ ["tremper","Tremper Albino","rec"],
+ ["bell","Bell Albino","rec"],
+ ["rainwater","Rainwater Albino","rec"],
+ ["eclipse","Eclipse","rec"],
+ ["blizzard","Blizzard","rec"],
+ ["murphy","Murphy Patternless","rec"],
+ ["mack","Mack Snow","co"],
+ ["giant","Giant","co"],
+ ["enigma","Enigma","dom"],
+ ["wy","White & Yellow","dom"]
+];
+
+const combosDef = [
+ {nombre:"Raptor", req:["tremper","eclipse","murphy"]},
+ {nombre:"Diablo Blanco", req:["tremper","blizzard","eclipse"]},
+ {nombre:"Radar", req:["bell","eclipse"]},
+ {nombre:"Typhoon", req:["rainwater","eclipse"]},
+ {nombre:"Universe", req:["mack_super","eclipse","wy"]}
+];
+
+const gdiv=document.getElementById("genes");
+genes.forEach(g=>{
+gdiv.innerHTML+=`
+<label>${g[1]}</label>
+<div class="row">
+<select id="${g[0]}_p">
+<option value="normal">Padre</option>
+<option value="het">Het</option>
+<option value="visual">Visual</option>
+<option value="super">Super</option>
+<option value="present">Presente</option>
+</select>
+<select id="${g[0]}_m">
+<option value="normal">Madre</option>
+<option value="het">Het</option>
+<option value="visual">Visual</option>
+<option value="super">Super</option>
+<option value="present">Presente</option>
+</select>
+</div>`;
+});
+
+function frac(p){return p===100?"4/4":p===75?"3/4":p===50?"2/4":p===25?"1/4":"";}
+
+function recCalc(p,m){
+if(p==="visual"&&m==="visual")return{v:100};
+if((p==="visual"&&m==="het")||(p==="het"&&m==="visual"))return{v:50,h:50};
+if(p==="het"&&m==="het")return{v:25,h:50};
+if((p==="visual"&&m==="normal")||(p==="normal"&&m==="visual"))return{h:100};
+if((p==="het"&&m==="normal")||(p==="normal"&&m==="het"))return{h:50};
+return{};
 }
 
-function calcular() {
-  const res = {};
-  recesivos.forEach(g=>{
-    const p = document.getElementById(g[0]+"_p").value;
-    const m = document.getElementById(g[0]+"_m").value;
-    const r = calcRecesivo(p,m);
-    if (Object.keys(r).length>0) res[g[0]] = r;
-  });
+function calcular(){
+let res={},genesPresentes={};
 
-  ["mack","giant"].forEach(g=>{
-    const p = document.getElementById(g+"_p").value;
-    const m = document.getElementById(g+"_m").value;
-    if (p==="super" || m==="super") res[g]={super:true};
-    else if (p!=="ausente" || m!=="ausente") res[g]={present:true};
-  });
+genes.forEach(g=>{
+const p=document.getElementById(g[0]+"_p").value;
+const m=document.getElementById(g[0]+"_m").value;
 
-  ["enigma","wy"].forEach(g=>{
-    const p = document.getElementById(g+"_p").value;
-    const m = document.getElementById(g+"_m").value;
-    if (p==="present" || m==="present") res[g]={present:true};
-  });
+if(g[2]==="rec"){
+const r=recCalc(p,m);
+if(Object.keys(r).length){
+res[g[0]]=r;
+if(r.v)genesPresentes[g[0]]=r.v;
+}
+}
+if(g[2]==="co"){
+if(p==="super"||m==="super"){res[g[0]]={super:true};genesPresentes[g[0]+"_super"]=100;}
+else if(p!=="normal"||m!=="normal"){res[g[0]]={present:true};genesPresentes[g[0]]=50;}
+}
+if(g[2]==="dom"){
+if(p==="present"||m==="present"){res[g[0]]={present:true};genesPresentes[g[0]]=50;}
+}
+});
 
-  mostrar(res);
+mostrar(res,genesPresentes);
 }
 
-function mostrar(r) {
-  const d = document.getElementById("resultados");
-  d.innerHTML = "";
-  for (const g in r) {
-    let t="";
-    if (r[g].visual) t+=r[g].visual+"% Visual<br>";
-    if (r[g].het) t+=r[g].het+"% Het<br>";
-    if (r[g].present) t+="Presente<br>";
-    if (r[g].super) t+="Super<br>";
-    d.innerHTML+=`<div class="result"><b>${g.toUpperCase()}</b><br>${t}</div>`;
-  }
+function mostrar(r,gp){
+const d=document.getElementById("resultados");
+const c=document.getElementById("combos");
+d.innerHTML="";c.innerHTML="";
+
+for(const g in r){
+let t="";
+if(r[g].v)t+=`${r[g].v}% Visual (${frac(r[g].v)})<br>`;
+if(r[g].h)t+=`${r[g].h}% Het (${frac(r[g].h)})<br>`;
+if(r[g].present)t+="Presente<br>";
+if(r[g].super)t+="Super<br>";
+d.innerHTML+=`<div class="result"><b>${g.toUpperCase()}</b><br>${t}</div>`;
+}
+
+combosDef.forEach(cb=>{
+let ok=true,prob=1,faltan=[];
+cb.req.forEach(rq=>{
+if(!gp[rq]){ok=false;faltan.push(rq);}
+else prob*=gp[rq]/100;
+});
+if(ok){
+c.innerHTML+=`<div class="result">✔ ${cb.nombre} (~${Math.round(prob*100)}% ≈ 1 de ${Math.round(1/prob)})</div>`;
+}else{
+c.innerHTML+=`<div class="result">➜ Ruta a ${cb.nombre} (falta: ${faltan.join(", ")})</div>`;
+}
+});
 }
 </script>
 
