@@ -5,38 +5,14 @@
 <title>Calculadora Genética – Gecko Leopardo</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body {
-  font-family: Arial, sans-serif;
-  background: #f5f5f5;
-  padding: 15px;
-}
-h1 { text-align: center; }
-.section {
-  background: white;
-  padding: 12px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-}
-label {
-  display: block;
-  margin-top: 8px;
-}
-select {
-  width: 100%;
-  padding: 6px;
-}
-button {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  margin-top: 10px;
-}
-#resultados div {
-  background: #eee;
-  padding: 8px;
-  margin-top: 6px;
-  border-radius: 6px;
-}
+body { font-family: Arial; background:#f5f5f5; padding:15px; }
+h1 { text-align:center; }
+.section { background:#fff; padding:12px; margin-bottom:15px; border-radius:8px; }
+.row { display:flex; gap:10px; }
+.row select { flex:1; }
+label { margin-top:8px; display:block; }
+button { width:100%; padding:12px; font-size:16px; }
+.result { background:#eee; padding:8px; margin-top:6px; border-radius:6px; }
 </style>
 </head>
 
@@ -47,81 +23,94 @@ button {
 <div class="section">
 <h3>Genes Recesivos</h3>
 
-<label>Tremper Albino</label>
-<select id="tremper">
-<option value="normal"></option>
-<option value="het">Het</option>
-<option value="visual">Visual</option>
-</select>
+<script>
+const recesivos = [
+ ["tremper","Tremper Albino"],
+ ["bell","Bell Albino"],
+ ["rainwater","Rainwater Albino"],
+ ["eclipse","Eclipse"],
+ ["blizzard","Blizzard"],
+ ["murphy","Murphy Patternless"]
+];
 
-<label>Bell Albino</label>
-<select id="bell">
-<option value="normal"></option>
-<option value="het">Het</option>
-<option value="visual">Visual</option>
-</select>
-
-<label>Rainwater Albino</label>
-<select id="rainwater">
-<option value="normal"></option>
-<option value="het">Het</option>
-<option value="visual">Visual</option>
-</select>
-
-<label>Eclipse</label>
-<select id="eclipse">
-<option value="normal"></option>
-<option value="het">Het</option>
-<option value="visual">Visual</option>
-</select>
-
-<label>Blizzard</label>
-<select id="blizzard">
-<option value="normal"></option>
-<option value="het">Het</option>
-<option value="visual">Visual</option>
-</select>
-
-<label>Murphy Patternless</label>
-<select id="murphy">
-<option value="normal"></option>
-<option value="het">Het</option>
-<option value="visual">Visual</option>
-</select>
+document.write(
+  recesivos.map(g => `
+  <label>${g[1]}</label>
+  <div class="row">
+    <select id="${g[0]}_p">
+      <option value="normal">Padre</option>
+      <option value="het">Het</option>
+      <option value="visual">Visual</option>
+    </select>
+    <select id="${g[0]}_m">
+      <option value="normal">Madre</option>
+      <option value="het">Het</option>
+      <option value="visual">Visual</option>
+    </select>
+  </div>
+`).join("")
+);
+</script>
 </div>
 
 <div class="section">
 <h3>Genes Codominantes</h3>
 
 <label>Mack Snow</label>
-<select id="mack">
-<option value="ausente"></option>
-<option value="present">Mack</option>
-<option value="super">Super Mack</option>
+<div class="row">
+<select id="mack_p">
+<option value="ausente">Padre</option>
+<option value="mack">Mack</option>
+<option value="super">Super</option>
 </select>
+<select id="mack_m">
+<option value="ausente">Madre</option>
+<option value="mack">Mack</option>
+<option value="super">Super</option>
+</select>
+</div>
 
 <label>Giant</label>
-<select id="giant">
-<option value="ausente"></option>
+<div class="row">
+<select id="giant_p">
+<option value="ausente">Padre</option>
 <option value="giant">Giant</option>
-<option value="super">Super Giant</option>
+<option value="super">Super</option>
 </select>
+<select id="giant_m">
+<option value="ausente">Madre</option>
+<option value="giant">Giant</option>
+<option value="super">Super</option>
+</select>
+</div>
 </div>
 
 <div class="section">
 <h3>Genes Dominantes</h3>
 
 <label>Enigma</label>
-<select id="enigma">
-<option value="ausente"></option>
+<div class="row">
+<select id="enigma_p">
+<option value="ausente">Padre</option>
 <option value="present">Presente</option>
 </select>
+<select id="enigma_m">
+<option value="ausente">Madre</option>
+<option value="present">Presente</option>
+</select>
+</div>
 
 <label>White & Yellow</label>
-<select id="wy">
-<option value="ausente"></option>
+<div class="row">
+<select id="wy_p">
+<option value="ausente">Padre</option>
 <option value="present">Presente</option>
 </select>
+<select id="wy_m">
+<option value="ausente">Madre</option>
+<option value="present">Presente</option>
+</select>
+</div>
 </div>
 
 <button onclick="calcular()">Calcular Cruce</button>
@@ -132,62 +121,53 @@ button {
 </div>
 
 <script>
-function recesivo(valor) {
-  if (valor === "visual") return { visual: 100 };
-  if (valor === "het") return { het: 100 };
+function calcRecesivo(p, m) {
+  if (p==="visual" && m==="visual") return {visual:100};
+  if ((p==="visual" && m==="het") || (p==="het" && m==="visual"))
+    return {visual:50, het:50};
+  if (p==="het" && m==="het") return {visual:25, het:50};
+  if ((p==="visual" && m==="normal") || (p==="normal" && m==="visual"))
+    return {het:100};
+  if ((p==="het" && m==="normal") || (p==="normal" && m==="het"))
+    return {het:50};
   return {};
 }
 
 function calcular() {
-  const r = {};
-
-  const genesRecesivos = ["tremper","bell","rainwater","eclipse","blizzard","murphy"];
-  genesRecesivos.forEach(g => {
-    const val = document.getElementById(g).value;
-    const res = recesivo(val);
-    if (Object.keys(res).length > 0) r[g] = res;
+  const res = {};
+  recesivos.forEach(g=>{
+    const p = document.getElementById(g[0]+"_p").value;
+    const m = document.getElementById(g[0]+"_m").value;
+    const r = calcRecesivo(p,m);
+    if (Object.keys(r).length>0) res[g[0]] = r;
   });
 
-  const mack = document.getElementById("mack").value;
-  if (mack === "present") r.mack = { present: true };
-  if (mack === "super") r.mack = { super: true };
+  ["mack","giant"].forEach(g=>{
+    const p = document.getElementById(g+"_p").value;
+    const m = document.getElementById(g+"_m").value;
+    if (p==="super" || m==="super") res[g]={super:true};
+    else if (p!=="ausente" || m!=="ausente") res[g]={present:true};
+  });
 
-  const giant = document.getElementById("giant").value;
-  if (giant === "giant") r.giant = { present: true };
-  if (giant === "super") r.giant = { super: true };
+  ["enigma","wy"].forEach(g=>{
+    const p = document.getElementById(g+"_p").value;
+    const m = document.getElementById(g+"_m").value;
+    if (p==="present" || m==="present") res[g]={present:true};
+  });
 
-  if (document.getElementById("enigma").value === "present") r.enigma = { present: true };
-  if (document.getElementById("wy").value === "present") r.wy = { present: true };
-
-  mostrarResultados(r);
+  mostrar(res);
 }
 
-function mostrarResultados(r) {
-  const div = document.getElementById("resultados");
-  div.innerHTML = "";
-
+function mostrar(r) {
+  const d = document.getElementById("resultados");
+  d.innerHTML = "";
   for (const g in r) {
-    const d = r[g];
-    let txt = "";
-
-    if (d.visual) txt += d.visual + "% Visual<br>";
-    if (d.het) txt += d.het + "% Het<br>";
-    if (d.present) txt += "Presente<br>";
-    if (d.super) txt += "Super<br>";
-
-    div.innerHTML += `<div><strong>${g.toUpperCase()}</strong><br>${txt}</div>`;
-  }
-
-  // Combos (alias)
-  const combos = [];
-  if (r.tremper && r.eclipse && r.murphy) combos.push("RAPTOR");
-  if (r.tremper && r.blizzard && r.eclipse) combos.push("DIABLO BLANCO");
-  if (r.bell && r.eclipse) combos.push("RADAR");
-  if (r.rainwater && r.eclipse) combos.push("TYPHOON");
-  if (r.mack && r.eclipse && r.wy) combos.push("UNIVERSE");
-
-  if (combos.length > 0) {
-    div.innerHTML += `<div><strong>COMBOS DETECTADOS</strong><br>${combos.join("<br>")}</div>`;
+    let t="";
+    if (r[g].visual) t+=r[g].visual+"% Visual<br>";
+    if (r[g].het) t+=r[g].het+"% Het<br>";
+    if (r[g].present) t+="Presente<br>";
+    if (r[g].super) t+="Super<br>";
+    d.innerHTML+=`<div class="result"><b>${g.toUpperCase()}</b><br>${t}</div>`;
   }
 }
 </script>
