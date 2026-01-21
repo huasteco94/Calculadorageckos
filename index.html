@@ -7,171 +7,150 @@
 </head>
 <body>
 
-  <h1>Calculadora Genética – Gecko Leopardo</h1>
+<h1>Calculadora Genética – Gecko Leopardo</h1>
 
-  <!-- ===================== -->
-  <!-- ALBINISMO -->
-  <!-- ===================== -->
-  <h2>Albinismo</h2>
+<!-- ===================== -->
+<!-- ALBINISMO -->
+<!-- ===================== -->
+<h2>Albinismo</h2>
 
-  <h3>Tremper</h3>
-  Padre:
-  <select id="padre_tremper">
-    <option value="normal">Normal</option>
-    <option value="het">Het</option>
-    <option value="visual">Visual</option>
-  </select>
+<h3>Tremper</h3>
+Padre:
+<select id="padre_tremper">
+  <option value="normal">Normal</option>
+  <option value="het">Het</option>
+  <option value="visual">Visual</option>
+</select>
+Madre:
+<select id="madre_tremper">
+  <option value="normal">Normal</option>
+  <option value="het">Het</option>
+  <option value="visual">Visual</option>
+</select>
 
-  Madre:
-  <select id="madre_tremper">
-    <option value="normal">Normal</option>
-    <option value="het">Het</option>
-    <option value="visual">Visual</option>
-  </select>
+<h3>Bell</h3>
+Padre:
+<select id="padre_bell">
+  <option value="normal">Normal</option>
+  <option value="het">Het</option>
+  <option value="visual">Visual</option>
+</select>
+Madre:
+<select id="madre_bell">
+  <option value="normal">Normal</option>
+  <option value="het">Het</option>
+  <option value="visual">Visual</option>
+</select>
 
-  <h3>Bell</h3>
-  Padre:
-  <select id="padre_bell">
-    <option value="normal">Normal</option>
-    <option value="het">Het</option>
-    <option value="visual">Visual</option>
-  </select>
+<h3>Rainwater</h3>
+Padre:
+<select id="padre_rainwater">
+  <option value="normal">Normal</option>
+  <option value="het">Het</option>
+  <option value="visual">Visual</option>
+</select>
+Madre:
+<select id="madre_rainwater">
+  <option value="normal">Normal</option>
+  <option value="het">Het</option>
+  <option value="visual">Visual</option>
+</select>
 
-  Madre:
-  <select id="madre_bell">
-    <option value="normal">Normal</option>
-    <option value="het">Het</option>
-    <option value="visual">Visual</option>
-  </select>
+<!-- ===================== -->
+<!-- OJOS -->
+<!-- ===================== -->
+<h2>Ojos</h2>
 
-  <h3>Rainwater</h3>
-  Padre:
-  <select id="padre_rainwater">
-    <option value="normal">Normal</option>
-    <option value="het">Het</option>
-    <option value="visual">Visual</option>
-  </select>
+<h3>Eclipse</h3>
+Padre:
+<select id="padre_eclipse">
+  <option value="normal">Normal</option>
+  <option value="het">Het</option>
+  <option value="visual">Visual</option>
+</select>
+Madre:
+<select id="madre_eclipse">
+  <option value="normal">Normal</option>
+  <option value="het">Het</option>
+  <option value="visual">Visual</option>
+</select>
 
-  Madre:
-  <select id="madre_rainwater">
-    <option value="normal">Normal</option>
-    <option value="het">Het</option>
-    <option value="visual">Visual</option>
-  </select>
+<!-- ===================== -->
+<!-- CODOMINANTES -->
+<!-- ===================== -->
+<h2>Codominantes</h2>
 
-  <!-- ===================== -->
-  <!-- OJOS -->
-  <!-- ===================== -->
-  <h2>Ojos</h2>
+<h3>Mack Snow</h3>
+Padre:
+<select id="padre_mack">
+  <option value="normal">Normal</option>
+  <option value="het">Mack Snow</option>
+  <option value="super">Super Mack Snow</option>
+</select>
+Madre:
+<select id="madre_mack">
+  <option value="normal">Normal</option>
+  <option value="het">Mack Snow</option>
+  <option value="super">Super Mack Snow</option>
+</select>
 
-  <h3>Eclipse</h3>
-  Padre:
-  <select id="padre_eclipse">
-    <option value="normal">Normal</option>
-    <option value="het">Het</option>
-    <option value="visual">Visual</option>
-  </select>
+<h3>Giant</h3>
+Padre:
+<select id="padre_giant">
+  <option value="normal">Normal</option>
+  <option value="het">Giant</option>
+  <option value="super">Super Giant</option>
+</select>
+Madre:
+<select id="madre_giant">
+  <option value="normal">Normal</option>
+  <option value="het">Giant</option>
+  <option value="super">Super Giant</option>
+</select>
 
-  Madre:
-  <select id="madre_eclipse">
-    <option value="normal">Normal</option>
-    <option value="het">Het</option>
-    <option value="visual">Visual</option>
-  </select>
+<br><br>
+<button onclick="calcular()">Calcular</button>
 
-  <!-- ===================== -->
-  <!-- CODOMINANTES -->
-  <!-- ===================== -->
-  <h2>Codominantes</h2>
+<h2>Resultado</h2>
+<pre id="resultado"></pre>
 
-  <h3>Mack Snow</h3>
-  Padre:
-  <select id="padre_mack">
-    <option value="normal">Normal</option>
-    <option value="het">Mack Snow</option>
-    <option value="super">Super Mack Snow</option>
-  </select>
+<!-- ===================== -->
+<!-- MOTOR GENÉTICO -->
+<!-- ===================== -->
+<script src="genetics.js"></script>
 
-  Madre:
-  <select id="madre_mack">
-    <option value="normal">Normal</option>
-    <option value="het">Mack Snow</option>
-    <option value="super">Super Mack Snow</option>
-  </select>
+<script>
+function calcular() {
+  let t = "";
 
-  <h3>Giant</h3>
-  Padre:
-  <select id="padre_giant">
-    <option value="normal">Normal</option>
-    <option value="het">Giant</option>
-    <option value="super">Super Giant</option>
-  </select>
+  function bloque(nombre, res, padre, madre) {
+    // No mostrar si ambos padres son normales
+    if (padre === "normal" && madre === "normal") return;
 
-  Madre:
-  <select id="madre_giant">
-    <option value="normal">Normal</option>
-    <option value="het">Giant</option>
-    <option value="super">Super Giant</option>
-  </select>
+    t += nombre + "\n";
 
-  <br><br>
-  <button onclick="calcular()">Calcular</button>
+    if (res.resultado.normal > 0)
+      t += "Normal: " + res.resultado.normal + "%\n";
 
-  <h2>Resultado</h2>
-  <pre id="resultado"></pre>
+    if (res.resultado.het > 0)
+      t += "Het: " + res.resultado.het + "%\n";
 
-  <!-- ===================== -->
-  <!-- MOTOR GENÉTICO -->
-  <!-- ===================== -->
-  <script src="genetics.js"></script>
+    if (res.resultado.visual > 0)
+      t += "Visual: " + res.resultado.visual + "%\n";
 
-  <!-- ===================== -->
-  <!-- LÓGICA -->
-  <!-- ===================== -->
-  <script>
-    function calcular() {
-      let t = "";
+    if (res.resultado.super > 0)
+      t += "Super: " + res.resultado.super + "%\n";
 
-      function bloque(nombre, res) {
-        t += nombre + "\n";
-        if (res.resultado.normal !== undefined)
-          t += "Normal: " + res.resultado.normal + "%\n";
-        if (res.resultado.het !== undefined)
-          t += "Het: " + res.resultado.het + "%\n";
-        if (res.resultado.visual !== undefined)
-          t += "Visual: " + res.resultado.visual + "%\n";
-        if (res.resultado.super !== undefined)
-          t += "Super: " + res.resultado.super + "%\n";
-        t += "\n";
-      }
+    t += "\n";
+  }
 
-      bloque("Tremper",
-        calcularGen("tremper",
-          padre_tremper.value, madre_tremper.value));
+  bloque(
+    "Tremper",
+    calcularGen("tremper", padre_tremper.value, madre_tremper.value),
+    padre_tremper.value,
+    madre_tremper.value
+  );
 
-      bloque("Bell",
-        calcularGen("bell",
-          padre_bell.value, madre_bell.value));
-
-      bloque("Rainwater",
-        calcularGen("rainwater",
-          padre_rainwater.value, madre_rainwater.value));
-
-      bloque("Eclipse",
-        calcularGen("eclipse",
-          padre_eclipse.value, madre_eclipse.value));
-
-      bloque("Mack Snow",
-        calcularGen("mack_snow",
-          padre_mack.value, madre_mack.value));
-
-      bloque("Giant",
-        calcularGen("giant",
-          padre_giant.value, madre_giant.value));
-
-      document.getElementById("resultado").textContent = t;
-    }
-  </script>
-
-</body>
-</html>
+  bloque(
+    "Bell",
+    calcularGen("bell", padre_bell.value, madre_bell.value),
