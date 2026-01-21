@@ -3,48 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <title>Calculadora Genética – Gecko Leopardo</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 body {
   font-family: Arial, sans-serif;
+  background: #f5f5f5;
   padding: 15px;
-  background: #f2f2f2;
 }
 h1 { text-align: center; }
-
-section {
+.section {
   background: white;
   padding: 12px;
   margin-bottom: 15px;
   border-radius: 8px;
 }
-
-.gene {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 6px;
-  margin-bottom: 8px;
+label {
+  display: block;
+  margin-top: 8px;
 }
-
-.gene label {
-  grid-column: 1 / 4;
-  font-weight: bold;
-}
-
 select {
   width: 100%;
-  padding: 4px;
+  padding: 6px;
 }
-
 button {
   width: 100%;
   padding: 12px;
   font-size: 16px;
+  margin-top: 10px;
 }
-
-#resultado {
-  white-space: pre-line;
-  font-size: 14px;
+#resultados div {
+  background: #eee;
+  padding: 8px;
+  margin-top: 6px;
+  border-radius: 6px;
 }
 </style>
 </head>
@@ -53,165 +44,151 @@ button {
 
 <h1>Calculadora Genética – Gecko Leopardo</h1>
 
-<section>
-<h2>Genes Recesivos</h2>
-<div id="recesivos"></div>
-</section>
+<div class="section">
+<h3>Genes Recesivos</h3>
 
-<section>
-<h2>Genes Codominantes</h2>
-<div id="codominantes"></div>
-</section>
+<label>Tremper Albino</label>
+<select id="tremper">
+<option value="normal"></option>
+<option value="het">Het</option>
+<option value="visual">Visual</option>
+</select>
 
-<section>
-<h2>Genes Dominantes</h2>
-<div id="dominantes"></div>
-</section>
+<label>Bell Albino</label>
+<select id="bell">
+<option value="normal"></option>
+<option value="het">Het</option>
+<option value="visual">Visual</option>
+</select>
+
+<label>Rainwater Albino</label>
+<select id="rainwater">
+<option value="normal"></option>
+<option value="het">Het</option>
+<option value="visual">Visual</option>
+</select>
+
+<label>Eclipse</label>
+<select id="eclipse">
+<option value="normal"></option>
+<option value="het">Het</option>
+<option value="visual">Visual</option>
+</select>
+
+<label>Blizzard</label>
+<select id="blizzard">
+<option value="normal"></option>
+<option value="het">Het</option>
+<option value="visual">Visual</option>
+</select>
+
+<label>Murphy Patternless</label>
+<select id="murphy">
+<option value="normal"></option>
+<option value="het">Het</option>
+<option value="visual">Visual</option>
+</select>
+</div>
+
+<div class="section">
+<h3>Genes Codominantes</h3>
+
+<label>Mack Snow</label>
+<select id="mack">
+<option value="ausente"></option>
+<option value="present">Mack</option>
+<option value="super">Super Mack</option>
+</select>
+
+<label>Giant</label>
+<select id="giant">
+<option value="ausente"></option>
+<option value="giant">Giant</option>
+<option value="super">Super Giant</option>
+</select>
+</div>
+
+<div class="section">
+<h3>Genes Dominantes</h3>
+
+<label>Enigma</label>
+<select id="enigma">
+<option value="ausente"></option>
+<option value="present">Presente</option>
+</select>
+
+<label>White & Yellow</label>
+<select id="wy">
+<option value="ausente"></option>
+<option value="present">Presente</option>
+</select>
+</div>
 
 <button onclick="calcular()">Calcular Cruce</button>
 
-<section>
-<h2>Resultados</h2>
-<div id="resultado"></div>
-</section>
+<div class="section">
+<h3>Resultados</h3>
+<div id="resultados"></div>
+</div>
 
 <script>
-// ======================
-// DEFINICIÓN DE GENES
-// ======================
-
-const genes = {
-  recesivos: [
-    { key:"tremper", label:"Tremper Albino" },
-    { key:"bell", label:"Bell Albino" },
-    { key:"rainwater", label:"Rainwater Albino" },
-    { key:"eclipse", label:"Eclipse" },
-    { key:"blizzard", label:"Blizzard" },
-    { key:"murphy", label:"Murphy Patternless" }
-  ],
-  codominantes: [
-    { key:"mack", label:"Mack Snow" },
-    { key:"supermack", label:"Super Mack Snow" }
-  ],
-  dominantes: [
-    { key:"enigma", label:"Enigma" },
-    { key:"wy", label:"White & Yellow" }
-  ]
-};
-
-// ======================
-// UI
-// ======================
-
-function renderGenes(lista, contenedor, opciones) {
-  const div = document.getElementById(contenedor);
-  lista.forEach(g => {
-    div.innerHTML += `
-      <div class="gene">
-        <label>${g.label}</label>
-        <select id="${g.key}_padre">${opciones}</select>
-        <select id="${g.key}_madre">${opciones}</select>
-      </div>
-    `;
-  });
+function recesivo(valor) {
+  if (valor === "visual") return { visual: 100 };
+  if (valor === "het") return { het: 100 };
+  return {};
 }
-
-renderGenes(
-  genes.recesivos,
-  "recesivos",
-  `<option value="normal">Normal</option>
-   <option value="het">Het</option>
-   <option value="visual">Visual</option>`
-);
-
-renderGenes(
-  genes.codominantes,
-  "codominantes",
-  `<option value="ausente">Ausente</option>
-   <option value="presente">Presente</option>`
-);
-
-renderGenes(
-  genes.dominantes,
-  "dominantes",
-  `<option value="ausente">Ausente</option>
-   <option value="presente">Presente</option>`
-);
-
-// ======================
-// GENÉTICA
-// ======================
-
-function calcRecesivo(p, m) {
-  if (p==="visual" && m==="visual") return { visual:100 };
-  if ((p==="visual"&&m==="het")||(p==="het"&&m==="visual"))
-    return { visual:50, het:50 };
-  if (p==="het" && m==="het")
-    return { visual:25, het:50, normal:25 };
-  if ((p==="visual"&&m==="normal")||(p==="normal"&&m==="visual"))
-    return { het:100 };
-  return { normal:100 };
-}
-
-// ======================
-// COMBOS
-// ======================
-
-const combos = [
-  { nombre:"RAPTOR", requiere:{ tremper:"visual", eclipse:"visual", murphy:"visual" }},
-  { nombre:"Diablo Blanco", requiere:{ tremper:"visual", blizzard:"visual", eclipse:"visual" },
-    advertencia:"Eclipse puede quedar oculto por Blizzard" },
-  { nombre:"Radar", requiere:{ bell:"visual", eclipse:"visual" }},
-  { nombre:"Typhoon", requiere:{ rainwater:"visual", eclipse:"visual" }},
-  { nombre:"Universe", requiere:{ supermack:"presente", eclipse:"visual", wy:"presente" },
-    alias:"Galaxy" }
-];
-
-// ======================
-// CÁLCULO
-// ======================
 
 function calcular() {
-  let estado = {};
-  let salida = "GENÉTICA RESULTANTE\n\n";
+  const r = {};
 
-  genes.recesivos.forEach(g => {
-    const p = document.getElementById(g.key+"_padre").value;
-    const m = document.getElementById(g.key+"_madre").value;
-    estado[g.key] = calcRecesivo(p,m);
-    salida += `${g.label}: ${JSON.stringify(estado[g.key])}\n`;
+  const genesRecesivos = ["tremper","bell","rainwater","eclipse","blizzard","murphy"];
+  genesRecesivos.forEach(g => {
+    const val = document.getElementById(g).value;
+    const res = recesivo(val);
+    if (Object.keys(res).length > 0) r[g] = res;
   });
 
-  genes.codominantes.concat(genes.dominantes).forEach(g => {
-    const p = document.getElementById(g.key+"_padre").value;
-    const m = document.getElementById(g.key+"_madre").value;
-    estado[g.key] = (p==="presente"||m==="presente") ? "presente" : "ausente";
-    salida += `${g.label}: ${estado[g.key]}\n`;
-  });
+  const mack = document.getElementById("mack").value;
+  if (mack === "present") r.mack = { present: true };
+  if (mack === "super") r.mack = { super: true };
 
-  salida += "\nCOMBOS\n";
+  const giant = document.getElementById("giant").value;
+  if (giant === "giant") r.giant = { present: true };
+  if (giant === "super") r.giant = { super: true };
 
-  combos.forEach(c => {
-    let ok=true, faltan=[];
-    for (let g in c.requiere) {
-      if (c.requiere[g]==="visual" && !estado[g]?.visual) {
-        ok=false; faltan.push(g);
-      }
-      if (c.requiere[g]==="presente" && estado[g]!=="presente") {
-        ok=false; faltan.push(g);
-      }
-    }
-    if (ok) {
-      salida += `✅ ${c.nombre}`;
-      if (c.alias) salida += ` (alias: ${c.alias})`;
-      salida += "\n";
-      if (c.advertencia) salida += `⚠️ ${c.advertencia}\n`;
-    } else if (faltan.length < Object.keys(c.requiere).length) {
-      salida += `↪ Ruta a ${c.nombre} (falta: ${faltan.join(", ")})\n`;
-    }
-  });
+  if (document.getElementById("enigma").value === "present") r.enigma = { present: true };
+  if (document.getElementById("wy").value === "present") r.wy = { present: true };
 
-  document.getElementById("resultado").textContent = salida;
+  mostrarResultados(r);
+}
+
+function mostrarResultados(r) {
+  const div = document.getElementById("resultados");
+  div.innerHTML = "";
+
+  for (const g in r) {
+    const d = r[g];
+    let txt = "";
+
+    if (d.visual) txt += d.visual + "% Visual<br>";
+    if (d.het) txt += d.het + "% Het<br>";
+    if (d.present) txt += "Presente<br>";
+    if (d.super) txt += "Super<br>";
+
+    div.innerHTML += `<div><strong>${g.toUpperCase()}</strong><br>${txt}</div>`;
+  }
+
+  // Combos (alias)
+  const combos = [];
+  if (r.tremper && r.eclipse && r.murphy) combos.push("RAPTOR");
+  if (r.tremper && r.blizzard && r.eclipse) combos.push("DIABLO BLANCO");
+  if (r.bell && r.eclipse) combos.push("RADAR");
+  if (r.rainwater && r.eclipse) combos.push("TYPHOON");
+  if (r.mack && r.eclipse && r.wy) combos.push("UNIVERSE");
+
+  if (combos.length > 0) {
+    div.innerHTML += `<div><strong>COMBOS DETECTADOS</strong><br>${combos.join("<br>")}</div>`;
+  }
 }
 </script>
 
