@@ -9,12 +9,9 @@
 
 <h1>Calculadora Genética – Gecko Leopardo</h1>
 
-<!-- ===================== -->
-<!-- ALBINISMO -->
-<!-- ===================== -->
 <h2>Albinismo</h2>
 
-<h3>Tremper</h3>
+Mention Tremper
 Padre:
 <select id="padre_tremper">
   <option value="normal">Normal</option>
@@ -56,9 +53,6 @@ Madre:
   <option value="visual">Visual</option>
 </select>
 
-<!-- ===================== -->
-<!-- OJOS -->
-<!-- ===================== -->
 <h2>Ojos</h2>
 
 <h3>Eclipse</h3>
@@ -75,9 +69,6 @@ Madre:
   <option value="visual">Visual</option>
 </select>
 
-<!-- ===================== -->
-<!-- CODOMINANTES -->
-<!-- ===================== -->
 <h2>Codominantes</h2>
 
 <h3>Mack Snow</h3>
@@ -114,9 +105,6 @@ Madre:
 <h2>Resultado</h2>
 <pre id="resultado"></pre>
 
-<!-- ===================== -->
-<!-- MOTOR GENÉTICO -->
-<!-- ===================== -->
 <script src="genetics.js"></script>
 
 <script>
@@ -124,71 +112,45 @@ function calcular() {
   let t = "";
 
   function bloque(nombre, res, padre, madre) {
-    // No mostrar si ambos padres son normales
     if (padre === "normal" && madre === "normal") return;
 
     t += nombre + "\n";
 
-    if (res.resultado.normal > 0)
+    if (res.resultado.normal !== undefined && res.resultado.normal > 0)
       t += "Normal: " + res.resultado.normal + "%\n";
 
-    if (res.resultado.het > 0)
+    if (res.resultado.het !== undefined && res.resultado.het > 0)
       t += "Het: " + res.resultado.het + "%\n";
 
-    if (res.resultado.visual > 0)
+    if (res.resultado.visual !== undefined && res.resultado.visual > 0)
       t += "Visual: " + res.resultado.visual + "%\n";
 
-    if (res.resultado.super > 0)
+    if (res.resultado.super !== undefined && res.resultado.super > 0)
       t += "Super: " + res.resultado.super + "%\n";
 
     t += "\n";
   }
 
-  bloque(
-    "Tremper",
+  bloque("Tremper",
     calcularGen("tremper", padre_tremper.value, madre_tremper.value),
-    padre_tremper.value,
-    madre_tremper.value
-  );
+    padre_tremper.value, madre_tremper.value);
 
-  bloque(
-    "Bell",
+  bloque("Bell",
     calcularGen("bell", padre_bell.value, madre_bell.value),
-    padre_bell.value,
-    madre_bell.value
-  );
+    padre_bell.value, madre_bell.value);
 
-  bloque(
-    "Rainwater",
+  bloque("Rainwater",
     calcularGen("rainwater", padre_rainwater.value, madre_rainwater.value),
-    padre_rainwater.value,
-    madre_rainwater.value
-  );
+    padre_rainwater.value, madre_rainwater.value);
 
-  bloque(
-    "Eclipse",
+  bloque("Eclipse",
     calcularGen("eclipse", padre_eclipse.value, madre_eclipse.value),
-    padre_eclipse.value,
-    madre_eclipse.value
-  );
+    padre_eclipse.value, madre_eclipse.value);
 
-  bloque(
-    "Mack Snow",
+  bloque("Mack Snow",
     calcularGen("mack_snow", padre_mack.value, madre_mack.value),
-    padre_mack.value,
-    madre_mack.value
-  );
+    padre_mack.value, madre_mack.value);
 
-  bloque(
-    "Giant",
+  bloque("Giant",
     calcularGen("giant", padre_giant.value, madre_giant.value),
-    padre_giant.value,
-    madre_giant.value
-  );
-
-  document.getElementById("resultado").textContent = t;
-}
-</script>
-
-</body>
-</html>
+    padre
