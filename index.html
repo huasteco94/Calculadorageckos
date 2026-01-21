@@ -9,49 +9,167 @@
 
   <h1>Calculadora Genética – Gecko Leopardo</h1>
 
-  <h2>Tremper Albino</h2>
+  <!-- ===================== -->
+  <!-- ALBINISMO -->
+  <!-- ===================== -->
+  <h2>Albinismo</h2>
 
-  <label>Padre:</label>
+  <h3>Tremper</h3>
+  Padre:
   <select id="padre_tremper">
     <option value="normal">Normal</option>
     <option value="het">Het</option>
     <option value="visual">Visual</option>
   </select>
 
-  <br><br>
-
-  <label>Madre:</label>
+  Madre:
   <select id="madre_tremper">
     <option value="normal">Normal</option>
     <option value="het">Het</option>
     <option value="visual">Visual</option>
   </select>
 
-  <br><br>
+  <h3>Bell</h3>
+  Padre:
+  <select id="padre_bell">
+    <option value="normal">Normal</option>
+    <option value="het">Het</option>
+    <option value="visual">Visual</option>
+  </select>
 
+  Madre:
+  <select id="madre_bell">
+    <option value="normal">Normal</option>
+    <option value="het">Het</option>
+    <option value="visual">Visual</option>
+  </select>
+
+  <h3>Rainwater</h3>
+  Padre:
+  <select id="padre_rainwater">
+    <option value="normal">Normal</option>
+    <option value="het">Het</option>
+    <option value="visual">Visual</option>
+  </select>
+
+  Madre:
+  <select id="madre_rainwater">
+    <option value="normal">Normal</option>
+    <option value="het">Het</option>
+    <option value="visual">Visual</option>
+  </select>
+
+  <!-- ===================== -->
+  <!-- OJOS -->
+  <!-- ===================== -->
+  <h2>Ojos</h2>
+
+  <h3>Eclipse</h3>
+  Padre:
+  <select id="padre_eclipse">
+    <option value="normal">Normal</option>
+    <option value="het">Het</option>
+    <option value="visual">Visual</option>
+  </select>
+
+  Madre:
+  <select id="madre_eclipse">
+    <option value="normal">Normal</option>
+    <option value="het">Het</option>
+    <option value="visual">Visual</option>
+  </select>
+
+  <!-- ===================== -->
+  <!-- CODOMINANTES -->
+  <!-- ===================== -->
+  <h2>Codominantes</h2>
+
+  <h3>Mack Snow</h3>
+  Padre:
+  <select id="padre_mack">
+    <option value="normal">Normal</option>
+    <option value="het">Mack Snow</option>
+    <option value="super">Super Mack Snow</option>
+  </select>
+
+  Madre:
+  <select id="madre_mack">
+    <option value="normal">Normal</option>
+    <option value="het">Mack Snow</option>
+    <option value="super">Super Mack Snow</option>
+  </select>
+
+  <h3>Giant</h3>
+  Padre:
+  <select id="padre_giant">
+    <option value="normal">Normal</option>
+    <option value="het">Giant</option>
+    <option value="super">Super Giant</option>
+  </select>
+
+  Madre:
+  <select id="madre_giant">
+    <option value="normal">Normal</option>
+    <option value="het">Giant</option>
+    <option value="super">Super Giant</option>
+  </select>
+
+  <br><br>
   <button onclick="calcular()">Calcular</button>
 
-  <h3>Resultado:</h3>
+  <h2>Resultado</h2>
   <pre id="resultado"></pre>
 
+  <!-- ===================== -->
   <!-- MOTOR GENÉTICO -->
+  <!-- ===================== -->
   <script src="genetics.js"></script>
 
-  <!-- LÓGICA DE LA PÁGINA -->
+  <!-- ===================== -->
+  <!-- LÓGICA -->
+  <!-- ===================== -->
   <script>
     function calcular() {
-      const padre = document.getElementById("padre_tremper").value;
-      const madre = document.getElementById("madre_tremper").value;
+      let t = "";
 
-      const res = calcularGen("tremper", padre, madre);
+      function bloque(nombre, res) {
+        t += nombre + "\n";
+        if (res.resultado.normal !== undefined)
+          t += "Normal: " + res.resultado.normal + "%\n";
+        if (res.resultado.het !== undefined)
+          t += "Het: " + res.resultado.het + "%\n";
+        if (res.resultado.visual !== undefined)
+          t += "Visual: " + res.resultado.visual + "%\n";
+        if (res.resultado.super !== undefined)
+          t += "Super: " + res.resultado.super + "%\n";
+        t += "\n";
+      }
 
-      let texto = "";
-      texto += "Gen: " + res.gen + "\n\n";
-      texto += "Normal: " + res.resultado.normal + "%\n";
-      texto += "Het: " + res.resultado.het + "%\n";
-      texto += "Visual: " + res.resultado.visual + "%\n";
+      bloque("Tremper",
+        calcularGen("tremper",
+          padre_tremper.value, madre_tremper.value));
 
-      document.getElementById("resultado").textContent = texto;
+      bloque("Bell",
+        calcularGen("bell",
+          padre_bell.value, madre_bell.value));
+
+      bloque("Rainwater",
+        calcularGen("rainwater",
+          padre_rainwater.value, madre_rainwater.value));
+
+      bloque("Eclipse",
+        calcularGen("eclipse",
+          padre_eclipse.value, madre_eclipse.value));
+
+      bloque("Mack Snow",
+        calcularGen("mack_snow",
+          padre_mack.value, madre_mack.value));
+
+      bloque("Giant",
+        calcularGen("giant",
+          padre_giant.value, madre_giant.value));
+
+      document.getElementById("resultado").textContent = t;
     }
   </script>
 
