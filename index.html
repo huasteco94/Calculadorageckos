@@ -3,11 +3,40 @@
 <head>
 <meta charset="UTF-8">
 <title>Calculadora Genética Gecko Leopardo</title>
+
 <style>
-body { font-family: Arial, sans-serif; padding: 15px; }
-select, button { margin: 4px 0; width: 100%; }
-.result { white-space: pre-line; margin-top: 15px; }
-h2 { margin-top: 25px; }
+body {
+  font-family: Arial, sans-serif;
+  padding: 15px;
+  background:#f7f7f7;
+}
+h1 { text-align:center; }
+section {
+  background:white;
+  padding:10px;
+  margin-bottom:15px;
+  border-radius:6px;
+}
+.gene {
+  display:grid;
+  grid-template-columns: 20px 1fr 1fr 1fr;
+  gap:5px;
+  align-items:center;
+  margin-bottom:6px;
+}
+label { font-size:14px; }
+select { width:100%; }
+button {
+  width:100%;
+  padding:10px;
+  font-size:16px;
+}
+#resultado {
+  white-space:pre-line;
+  background:white;
+  padding:10px;
+  border-radius:6px;
+}
 </style>
 </head>
 
@@ -15,151 +44,121 @@ h2 { margin-top: 25px; }
 
 <h1>Calculadora Genética – Gecko Leopardo</h1>
 
-<h2>Genética de los padres</h2>
+<section>
+<h2>Genes Recesivos</h2>
+<div id="recesivos"></div>
+</section>
 
-<div id="genes"></div>
+<section>
+<h2>Genes Codominantes</h2>
+<div id="codominantes"></div>
+</section>
 
-<button onclick="calcular()">Calcular</button>
+<section>
+<h2>Genes Dominantes</h2>
+<div id="dominantes"></div>
+</section>
 
-<div id="resultado" class="result"></div>
+<button onclick="calcular()">Calcular Cruce</button>
+
+<section>
+<h2>Resultados</h2>
+<div id="resultado"></div>
+</section>
 
 <script>
 // ======================
 // DEFINICIÓN DE GENES
 // ======================
 
-const recesivos = [
-  { key:"tremper", label:"Tremper Albino" },
-  { key:"bell", label:"Bell Albino" },
-  { key:"rainwater", label:"Rainwater Albino" },
-  { key:"eclipse", label:"Eclipse" },
-  { key:"blizzard", label:"Blizzard" },
-  { key:"murphy", label:"Murphy Patternless" }
-];
-
-const dominantes = [
-  { key:"enigma", label:"Enigma" },
-  { key:"wy", label:"White & Yellow" },
-  { key:"mack", label:"Mack Snow" },
-  { key:"supermack", label:"Super Mack Snow" }
-];
+const genes = {
+  recesivos: [
+    { key:"tremper", label:"Tremper Albino" },
+    { key:"bell", label:"Bell Albino" },
+    { key:"rainwater", label:"Rainwater Albino" },
+    { key:"eclipse", label:"Eclipse" },
+    { key:"blizzard", label:"Blizzard" },
+    { key:"murphy", label:"Murphy Patternless" }
+  ],
+  codominantes: [
+    { key:"mack", label:"Mack Snow" },
+    { key:"supermack", label:"Super Mack Snow" }
+  ],
+  dominantes: [
+    { key:"enigma", label:"Enigma" },
+    { key:"wy", label:"White & Yellow" }
+  ]
+};
 
 // ======================
-// UI
+// UI GENERACIÓN
 // ======================
 
-const geneDiv = document.getElementById("genes");
-
-recesivos.forEach(g => crearSelect(g, false));
-dominantes.forEach(g => crearSelect(g, true));
-
-function crearSelect(gen, dominante) {
-  geneDiv.innerHTML += `
-    <label><strong>${gen.label}</strong></label>
-    <select id="${gen.key}_padre">
-      ${dominante ? opcionesDom() : opcionesRec()}
-    </select>
-    <select id="${gen.key}_madre">
-      ${dominante ? opcionesDom() : opcionesRec()}
-    </select>
-    <hr>
-  `;
+function crearGenes(lista, contenedor, opciones) {
+  const div = document.getElementById(contenedor);
+  lista.forEach(g => {
+    div.innerHTML += `
+      <div class="gene">
+        <input type="checkbox" id="use_${g.key}">
+        <label>${g.label}</label>
+        <select id="${g.key}_padre">${opciones}</select>
+        <select id="${g.key}_madre">${opciones}</select>
+      </div>
+    `;
+  });
 }
 
-function opcionesRec() {
-  return `
-    <option value="normal">Normal</option>
-    <option value="het">Het</option>
-    <option value="visual">Visual</option>
-  `;
-}
+crearGenes(
+  genes.recesivos,
+  "recesivos",
+  `<option value="normal">Normal</option>
+   <option value="het">Het</option>
+   <option value="visual">Visual</option>`
+);
 
-function opcionesDom() {
-  return `
-    <option value="ausente">Ausente</option>
-    <option value="presente">Presente</option>
-  `;
-}
+crearGenes(
+  genes.codominantes,
+  "codominantes",
+  `<option value="ausente">Ausente</option>
+   <option value="presente">Presente</option>`
+);
+
+crearGenes(
+  genes.dominantes,
+  "dominantes",
+  `<option value="ausente">Ausente</option>
+   <option value="presente">Presente</option>`
+);
 
 // ======================
 // GENÉTICA
 // ======================
 
 function calcRecesivo(p, m) {
-  if (p === "visual" && m === "visual") return { visual:100 };
-  if ((p === "visual" && m === "het") || (p === "het" && m === "visual"))
+  if (p==="visual" && m==="visual") return { visual:100 };
+  if ((p==="visual"&&m==="het")||(p==="het"&&m==="visual"))
     return { visual:50, het:50 };
-  if (p === "het" && m === "het")
+  if (p==="het" && m==="het")
     return { visual:25, het:50, normal:25 };
-  if ((p === "visual" && m === "normal") || (p === "normal" && m === "visual"))
+  if ((p==="visual"&&m==="normal")||(p==="normal"&&m==="visual"))
     return { het:100 };
   return { normal:100 };
 }
 
 // ======================
-// COMBOS (Mendelianos)
+// COMBOS
 // ======================
 
 const combos = [
-  { nombre:"RAPTOR", requiere:{ tremper:"visual", eclipse:"visual", murphy:"visual" }},
-  { nombre:"Diablo Blanco", requiere:{ tremper:"visual", blizzard:"visual", eclipse:"visual" },
-    advertencia:"Eclipse puede quedar oculto por Blizzard" },
-  { nombre:"Nova", requiere:{ tremper:"visual", eclipse:"visual", enigma:"presente" }},
-  { nombre:"Radar", requiere:{ bell:"visual", eclipse:"visual" }},
-  { nombre:"Typhoon", requiere:{ rainwater:"visual", eclipse:"visual" }},
-  { nombre:"Universe", requiere:{ supermack:"presente", eclipse:"visual", wy:"presente" }}
-];
-
-// ======================
-// CÁLCULO
-// ======================
-
-function calcular() {
-  let salida = "RESULTADOS\n\n";
-  const estado = {};
-
-  recesivos.forEach(g => {
-    const p = document.getElementById(g.key+"_padre").value;
-    const m = document.getElementById(g.key+"_madre").value;
-    estado[g.key] = calcRecesivo(p, m);
-    salida += `${g.label}: ${JSON.stringify(estado[g.key])}\n`;
-  });
-
-  dominantes.forEach(g => {
-    const p = document.getElementById(g.key+"_padre").value;
-    const m = document.getElementById(g.key+"_madre").value;
-    estado[g.key] = (p === "presente" || m === "presente") ? "presente" : "ausente";
-  });
-
-  salida += "\nCOMBOS:\n";
-
-  combos.forEach(c => {
-    let ok = true;
-    let faltan = [];
-
-    for (let g in c.requiere) {
-      if (c.requiere[g] === "visual") {
-        if (!estado[g] || !estado[g].visual) {
-          ok = false; faltan.push(g);
-        }
-      } else {
-        if (estado[g] !== "presente") {
-          ok = false; faltan.push(g);
-        }
-      }
-    }
-
-    if (ok) {
-      salida += `✅ ${c.nombre}\n`;
-      if (c.advertencia) salida += `⚠️ ${c.advertencia}\n`;
-    } else if (faltan.length < Object.keys(c.requiere).length) {
-      salida += `↪ Ruta a ${c.nombre} (falta: ${faltan.join(", ")})\n`;
-    }
-  });
-
-  document.getElementById("resultado").textContent = salida;
-}
-</script>
-
-</body>
-</html>
+  {
+    nombre:"RAPTOR",
+    requiere:{ tremper:"visual", eclipse:"visual", murphy:"visual" }
+  },
+  {
+    nombre:"Diablo Blanco",
+    requiere:{ tremper:"visual", blizzard:"visual", eclipse:"visual" },
+    advertencia:"Eclipse puede quedar oculto por Blizzard"
+  },
+  {
+    nombre:"Radar",
+    requiere:{
