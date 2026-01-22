@@ -185,13 +185,17 @@ function calcularCruce() {
 
   // Determinar línea del ejemplar
   let linea = '';
-  if (genes.tremper.includes('visual')) linea='tremper';
-  else if (genes.bell.includes('visual')) linea='bell';
-  else if (genes.rain.includes('visual')) linea='rain';
+  if (genes.tremper.includes('visual') || genes.tremper.includes('het')) linea='tremper';
+  else if (genes.bell.includes('visual') || genes.bell.includes('het')) linea='bell';
+  else if (genes.rain.includes('visual') || genes.rain.includes('het')) linea='rain';
 
   combos.forEach(c=>{
     if (c.linea===linea) {
-      let presentes = c.genes.filter(g=>genes[g] && genes[g].includes('visual') || genes[g].includes('presente'));
+      let presentes = c.genes.filter(g => {
+        const val = genes[g];
+        if(!val) return false;
+        return val.includes('visual') || val.includes('presente') || val.includes('het');
+      });
       if (presentes.length === c.genes.length) {
         combosLogrados.push(`<div class="combo-logrado">✅ ${c.name} <br>${c.genes.join(' + ')}</div>`);
       } else if (presentes.length>0){
