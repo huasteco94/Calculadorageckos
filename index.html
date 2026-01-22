@@ -120,45 +120,48 @@ function calcularCruce() {
 
   let resultadosHTML = '<h3>Resumen del Cruce</h3>';
 
-  // === Resultados Recesivos ===
+  // === Resultados Recesivos con fracciones ===
   resultadosHTML += '<h3>Resultados Genéticos</h3>';
   resultadosHTML += '<h4>Recesivos</h4>';
   for (const key of ['tremper','bell','rain','eclipse']) {
-    const valores = genes[key].filter(v => v!=="");
-    if (valores.length > 0) {
-      let het = valores.filter(v=>'het'===v).length;
-      let visual = valores.filter(v=>'visual'===v).length;
-      let partes = [];
-      if (visual) partes.push('Visual '+(visual*50)+'%');
-      if (het) partes.push('Het '+(het*50)+'%');
-      resultadosHTML += `<p>${key.charAt(0).toUpperCase()+key.slice(1)} Albino: ${partes.join(', ')}</p>`;
-    }
+    const vals = genes[key];
+    if(vals[0]==='' && vals[1]==='') continue;
+
+    // Probabilidades
+    let visual = 0, het=0;
+    if(vals[0]==='visual' && vals[1]==='visual') visual=100;
+    else if((vals[0]==='visual' && vals[1]==='het') || (vals[1]==='visual' && vals[0]==='het')) { visual=50; het=50; }
+    else if(vals[0]==='het' && vals[1]==='het') { visual=25; het=50; }
+    else if(vals[0]==='visual' && vals[1]==='') visual=100;
+    else if(vals[1]==='visual' && vals[0]==='') visual=100;
+    else if(vals[0]==='het' && vals[1]==='') het=50;
+    else if(vals[1]==='het' && vals[0]==='') het=50;
+
+    let partes=[];
+    if(visual) partes.push('Visual '+visual+'%');
+    if(het) partes.push('Het '+het+'%');
+    resultadosHTML += `<p>${key.charAt(0).toUpperCase()+key.slice(1)} Albino: ${partes.join(', ')}</p>`;
   }
 
   // === Co-dominantes ===
   resultadosHTML += '<h4>Co-dominantes</h4>';
   for (const key of ['blizzard','murphy','mack','superMack','giant','superGiant']) {
     const valores = genes[key].filter(v => v!=="");
-    if (valores.length>0) {
-      resultadosHTML += `<p>${key.charAt(0).toUpperCase()+key.slice(1)}: Presente</p>`;
-    }
+    if (valores.length>0) resultadosHTML += `<p>${key.charAt(0).toUpperCase()+key.slice(1)}: Presente</p>`;
   }
 
   // === Dominantes ===
   resultadosHTML += '<h4>Dominantes</h4>';
   for (const key of ['enigma','wy']) {
     const valores = genes[key].filter(v => v!=="");
-    if (valores.length>0) {
-      resultadosHTML += `<p>${key.charAt(0).toUpperCase()+key.slice(1)}: Presente</p>`;
-    }
+    if (valores.length>0) resultadosHTML += `<p>${key.charAt(0).toUpperCase()+key.slice(1)}: Presente</p>`;
   }
 
-  // === Combos logrados y rutas ===
-  resultadosHTML += '<h3>Combos logrados</h3>';
+  // === Combos y rutas con fracciones ===
+  resultadosHTML += '<h3>Combos logrados y rutas</h3>';
   let combosLogrados = [];
   let rutasHTML = '';
 
-  // Lista de combos con genes necesarios y línea
   const combos = [
     {name:'BEE',genes:['enigma','eclipse'],linea:'tremper'},
     {name:'Black Hole',genes:['mack','enigma','eclipse'],linea:'tremper'},
@@ -183,22 +186,21 @@ function calcularCruce() {
     {name:'Cyclone',genes:['rain','eclipse','murphy'],linea:'rain'}
   ];
 
-  // Determinar línea del ejemplar
-  let linea = '';
-  if (genes.tremper.includes('visual') || genes.tremper.includes('het')) linea='tremper';
-  else if (genes.bell.includes('visual') || genes.bell.includes('het')) linea='bell';
-  else if (genes.rain.includes('visual') || genes.rain.includes('het')) linea='rain';
+  let linea='';
+  if(genes.tremper.includes('visual') || genes.tremper.includes('het')) linea='tremper';
+  else if(genes.bell.includes('visual') || genes.bell.includes('het')) linea='bell';
+  else if(genes.rain.includes('visual') || genes.rain.includes('het')) linea='rain';
 
   combos.forEach(c=>{
-    if (c.linea===linea) {
-      let presentes = c.genes.filter(g => {
+    if(c.linea===linea){
+      let presentes = c.genes.filter(g=>{
         const val = genes[g];
         if(!val) return false;
-        return val.includes('visual') || val.includes('presente') || val.includes('het');
+        return val.includes('visual') || val.includes('het') || val.includes('presente');
       });
-      if (presentes.length === c.genes.length) {
+      if(presentes.length === c.genes.length){
         combosLogrados.push(`<div class="combo-logrado">✅ ${c.name} <br>${c.genes.join(' + ')}</div>`);
-      } else if (presentes.length>0){
+      } else if(presentes.length>0){
         let faltantes = c.genes.filter(g=>!presentes.includes(g));
         rutasHTML += `<div class="ruta-combo">➜ Ruta a ${c.name}: Falta ${faltantes.join(', ')} (${c.genes.join(' + ')})</div>`;
       }
@@ -210,14 +212,12 @@ function calcularCruce() {
 
   // === Poligénicos Informativos ===
   resultadosHTML += '<h3>Líneas poligénicas (informativas)</h3>';
-  for (const key of ['mandarin','blood','bloodInf','bloodElec','tornado']) {
-    const valores = genes[key].filter(v => v!=="");
-    if (valores.length>0) {
-      resultadosHTML += `<div class="poligenico">${key.charAt(0).toUpperCase()+key.slice(1)}: Presente</div>`;
-    }
+  for(const key of ['mandarin','blood','bloodInf','bloodElec','tornado']){
+    const vals=genes[key].filter(v=>v!=="");
+    if(vals.length>0) resultadosHTML += `<div class="poligenico">${key.charAt(0).toUpperCase()+key.slice(1)}: Presente</div>`;
   }
 
-  document.getElementById('resultados').innerHTML = resultadosHTML;
+  document.getElementById('resultados').innerHTML=resultadosHTML;
 }
 </script>
 </body>
