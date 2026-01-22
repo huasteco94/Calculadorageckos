@@ -10,7 +10,7 @@ h2 { margin-top: 20px; }
 section { margin-bottom: 20px; }
 label { display: block; margin-top: 10px; }
 select { width: 200px; margin-top: 5px; }
-.result { border: 1px solid #ccc; padding: 10px; margin-top: 10px; }
+.result { border: 1px solid #ccc; padding: 10px; margin-top: 10px; min-height: 20px; }
 .combo { margin-left: 20px; }
 </style>
 </head>
@@ -53,13 +53,12 @@ select { width: 200px; margin-top: 5px; }
 </section>
 
 <script>
-// ====== Datos de ejemplo ======
+// ====== Datos base ======
 const genesRecesivos = ["tremper","bell","rain","eclipse","blizzard","murphy"];
 const genesCodominantes = ["mack","superMack","giant"];
 const genesDominantes = ["enigma","wy","whiteYellow"];
 const poligenicos = ["mandarin","tangerine","blood","bloodInferno","bloodElectric","tornado"];
 
-// Combos definidos
 const combos = [
   {name:"BEE", genes:["enigma","eclipse"]},
   {name:"Black Hole", genes:["mack","enigma","eclipse"]},
@@ -84,13 +83,12 @@ const combos = [
   {name:"Cyclone", genes:["rain","eclipse","murphy"]}
 ];
 
-// Ejemplo de progenitores
 const progenitores = [
   {id:1, nombre:"Gecko1", genes:{tremper:"het",eclipse:"visual",mack:"presente",superMack:"",wy:"",giant:"",blizzard:"",murphy:"",bell:"",rain:"",enigma:"presente",whiteYellow:""}},
   {id:2, nombre:"Gecko2", genes:{tremper:"",eclipse:"het",mack:"presente",superMack:"super",wy:"presente",giant:"giant",blizzard:"het",murphy:"het",bell:"",rain:"",enigma:"",whiteYellow:""}}  
 ];
 
-// ====== Llenar select padre/madre ======
+// ====== Llenar selects ======
 const padreSelect = document.getElementById("padre");
 const madreSelect = document.getElementById("madre");
 progenitores.forEach(p => {
@@ -98,32 +96,42 @@ progenitores.forEach(p => {
   madreSelect.innerHTML += `<option value="${p.id}">${p.nombre}</option>`;
 });
 
-// ====== Funciones de cálculo ======
-function calcularPorcentaje(gen, g1, g2){
-  const res = {visual:0,het:0,presente:0,super:0};
-  // Recesivos
+// ====== Funciones ======
+function getPorcentaje(gen, g1, g2){
+  g1 = g1||""; g2=g2||"";
   if(genesRecesivos.includes(gen)){
-    if(g1==="visual" && g2==="visual") res.visual=100;
-    else if((g1==="visual" && g2==="het") || (g1==="het" && g2==="visual")) {res.visual=50; res.het=50;}
-    else if(g1==="het" && g2==="het") {res.visual=25; res.het=50;}
-    else if((g1==="visual" && !g2) || (!g1 && g2==="visual")) res.het=100;
-    else if((g1==="het" && !g2) || (!g1 && g2==="het")) res.het=50;
+    if(g1==="visual" && g2==="visual") return {visual:100};
+    if((g1==="visual" && g2==="het")||(g1==="het" && g2==="visual")) return {visual:50,het:50};
+    if(g1==="het" && g2==="het") return {visual:25,het:50};
+    if((g1==="visual" && !g2)||(!g1 && g2==="visual")) return {het:100};
+    if((g1==="het" && !g2)||(!g1 && g2==="het")) return {het:50};
   }
-  // Codominantes
-  else if(genesCodominantes.includes(gen)){
-    if(g1==="presente" && g2==="") res.presente=50;
-    else if(g1==="" && g2==="presente") res.presente=50;
-    else if(g1==="presente" && g2==="presente") {res.presente=50; res.super=25;}
-    else if((g1==="super" && g2==="") || (g1==="" && g2==="super")) res.presente=100;
-    else if((g1==="super" && g2==="presente") || (g1==="presente" && g2==="super")) {res.presente=50; res.super=50;}
-    else if(g1==="super" && g2==="super") res.super=100;
+  if(genesCodominantes.includes(gen)){
+    if((g1==="presente" && g2==="")||(g1==="" && g2==="presente")) return {presente:50};
+    if(g1==="presente" && g2==="presente") return {presente:50,super:25};
+    if((g1==="super" && g2==="")||(g1==="" && g2==="super")) return {presente:100};
+    if((g1==="super" && g2==="presente")||(g1==="presente" && g2==="super")) return {presente:50,super:50};
+    if(g1==="super" && g2==="super") return {super:100};
   }
-  // Dominantes
-  else if(genesDominantes.includes(gen)){
-    if((g1==="presente" && g2==="") || (g1==="" && g2==="presente")) res.presente=50;
-    else if(g1==="presente" && g2==="presente") res.presente=75;
+  if(genesDominantes.includes(gen)){
+    if((g1==="presente" && g2==="")||(g1==="" && g2==="presente")) return {presente:50};
+    if(g1==="presente" && g2==="presente") return {presente:75};
   }
-  return res;
+  return {};
+}
+
+// Calcula porcentaje general de combo
+function porcentajeCombo(combo, padre, madre){
+  let total = combo.genes.length;
+  let suma = 0;
+  combo.genes.forEach(gen=>{
+    const porc = getPorcentaje(gen,padre.genes[gen],madre.genes[gen]);
+    if(Object.keys(porc).length>0){
+      // Tomamos el valor máximo de cada gen como aproximación
+      suma += Math.max(...Object.values(porc));
+    }
+  });
+  return Math.round(suma/total);
 }
 
 function mostrarResultados(){
@@ -134,63 +142,45 @@ function mostrarResultados(){
   const madre = progenitores.find(p=>p.id===mId);
 
   const resultadosDiv = document.getElementById("resultados");
-  resultadosDiv.innerHTML = "";
-
   const combosDiv = document.getElementById("combos");
-  combosDiv.innerHTML = "";
-
   const rutasDiv = document.getElementById("rutas");
-  rutasDiv.innerHTML = "";
-
   const poligenicosDiv = document.getElementById("poligenicos");
+
+  resultadosDiv.innerHTML = combosDiv.innerHTML = rutasDiv.innerHTML = "";
   poligenicosDiv.innerHTML = poligenicos.filter(g=>padre.genes[g]||madre.genes[g]).join(", ");
 
-  // ---- Resultados Recesivos ----
-  const resRecesivos = genesRecesivos.map(g=>{
-    const porc = calcularPorcentaje(g, padre.genes[g], madre.genes[g]);
-    if(!porc.visual && !porc.het) return null;
-    return `${g}: ${porc.visual?porc.visual+"% visual":""} ${porc.het?porc.het+"% het":""}`.trim();
-  }).filter(r=>r);
-  if(resRecesivos.length) resultadosDiv.innerHTML += "<b>Recesivos:</b><br>"+resRecesivos.join("<br>");
-
-  // ---- Resultados Codominantes ----
-  const resCodom = genesCodominantes.map(g=>{
-    const porc = calcularPorcentaje(g, padre.genes[g], madre.genes[g]);
-    if(!porc.presente && !porc.super) return null;
-    return `${g}: ${porc.presente?porc.presente+"% presente":""} ${porc.super?porc.super+"% super":""}`.trim();
-  }).filter(r=>r);
-  if(resCodom.length) resultadosDiv.innerHTML += "<br><b>Codominantes:</b><br>"+resCodom.join("<br>");
-
-  // ---- Resultados Dominantes ----
-  const resDom = genesDominantes.map(g=>{
-    const porc = calcularPorcentaje(g, padre.genes[g], madre.genes[g]);
-    if(!porc.presente) return null;
-    return `${g}: ${porc.presente?porc.presente+"% presente":""}`.trim();
-  }).filter(r=>r);
-  if(resDom.length) resultadosDiv.innerHTML += "<br><b>Dominantes:</b><br>"+resDom.join("<br>");
-
-  // ---- Combos logrados y porcentajes ----
-  combos.forEach(c=>{
-    let porcentaje = 1;
-    let present = false;
-    c.genes.forEach(gen=>{
-      const porc = calcularPorcentaje(gen,padre.genes[gen],madre.genes[gen]);
-      let p = porc.visual||porc.het||porc.presente||porc.super||0;
-      if(p>0) present = true;
-      porcentaje *= p/100;
-    });
-    if(present) combosDiv.innerHTML += `<div class="combo">✅ ${c.name} (${c.genes.join(" + ")}) ≈ ${(porcentaje*100).toFixed(1)}%</div>`;
+  // Recesivos
+  genesRecesivos.forEach(g=>{
+    const porc = getPorcentaje(g,padre.genes[g],madre.genes[g]);
+    if(Object.keys(porc).length) resultadosDiv.innerHTML += `<div>${g}: ${Object.entries(porc).map(([k,v])=>v+"% "+k).join(", ")}</div>`;
   });
 
-  // ---- Rutas a combos (genes faltantes) ----
+  // Codominantes
+  genesCodominantes.forEach(g=>{
+    const porc = getPorcentaje(g,padre.genes[g],madre.genes[g]);
+    if(Object.keys(porc).length) resultadosDiv.innerHTML += `<div>${g}: ${Object.entries(porc).map(([k,v])=>v+"% "+k).join(", ")}</div>`;
+  });
+
+  // Dominantes
+  genesDominantes.forEach(g=>{
+    const porc = getPorcentaje(g,padre.genes[g],madre.genes[g]);
+    if(Object.keys(porc).length) resultadosDiv.innerHTML += `<div>${g}: ${Object.entries(porc).map(([k,v])=>v+"% "+k).join(", ")}</div>`;
+  });
+
+  // Combos logrados
   combos.forEach(c=>{
-    let faltan = [];
-    let presentes = [];
+    const porcCombo = porcentajeCombo(c,padre,madre);
+    const tiene = porcCombo > 0;
+    if(tiene) combosDiv.innerHTML += `<div class="combo">✅ ${c.name} (${c.genes.join(" + ")}) ${porcCombo}%</div>`;
+  });
+
+  // Rutas a combos
+  combos.forEach(c=>{
+    let faltan = [], presentes=[];
     c.genes.forEach(gen=>{
-      const porc = calcularPorcentaje(gen,padre.genes[gen],madre.genes[gen]);
-      let p = porc.visual||porc.het||porc.presente||porc.super||0;
-      if(p==0) faltan.push(gen);
-      else presentes.push(gen);
+      const porc = getPorcentaje(gen,padre.genes[gen],madre.genes[gen]);
+      if(Object.keys(porc).length>0) presentes.push(gen);
+      else faltan.push(gen);
     });
     if(faltan.length>0 && presentes.length>0){
       rutasDiv.innerHTML += `<div class="combo">Ruta a ${c.name}: falta (${faltan.join(", ")}) | presentes (${presentes.join(", ")})</div>`;
@@ -201,6 +191,5 @@ function mostrarResultados(){
 padreSelect.addEventListener("change", mostrarResultados);
 madreSelect.addEventListener("change", mostrarResultados);
 </script>
-
 </body>
 </html>
