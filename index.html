@@ -5,191 +5,139 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calculadora Genética Gecko Leopardo</title>
 <style>
-body { font-family: Arial, sans-serif; margin: 20px; }
+body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
 h2 { margin-top: 20px; }
-section { margin-bottom: 20px; }
-label { display: block; margin-top: 10px; }
-select { width: 200px; margin-top: 5px; }
-.result { border: 1px solid #ccc; padding: 10px; margin-top: 10px; min-height: 20px; }
-.combo { margin-left: 20px; }
+select, button { margin: 5px; padding: 5px; }
+.result-block { background: #fff; padding: 15px; margin: 10px 0; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1);}
+.combo { margin-left: 15px; }
+.percentage { font-weight: bold; }
 </style>
 </head>
 <body>
 
 <h1>Calculadora Genética Gecko Leopardo</h1>
 
-<section>
+<div>
   <h2>Selecciona los progenitores</h2>
-  <label>Macho
-    <select id="padre">
-      <option value="">Selecciona macho</option>
+  <div>
+    <label>Hembra:</label>
+    <select id="female">
+      <option value="">--Selecciona--</option>
+      <option value="tremper">Tremper Albino</option>
+      <option value="bell">Bell Albino</option>
+      <option value="rainwater">Rainwater Albino</option>
+      <option value="nl">Normal / No Albino</option>
     </select>
-  </label>
-  <label>Hembra
-    <select id="madre">
-      <option value="">Selecciona hembra</option>
+  </div>
+  <div>
+    <label>Macho:</label>
+    <select id="male">
+      <option value="">--Selecciona--</option>
+      <option value="tremper">Tremper Albino</option>
+      <option value="bell">Bell Albino</option>
+      <option value="rainwater">Rainwater Albino</option>
+      <option value="nl">Normal / No Albino</option>
     </select>
-  </label>
-</section>
+  </div>
+</div>
 
-<section>
+<div>
   <h2>Resultados Genéticos</h2>
-  <div id="resultados" class="result"></div>
-</section>
-
-<section>
-  <h2>Combos logrados</h2>
-  <div id="combos" class="result"></div>
-</section>
-
-<section>
-  <h2>Rutas a combos</h2>
-  <div id="rutas" class="result"></div>
-</section>
-
-<section>
-  <h2>Líneas poligénicas</h2>
-  <div id="poligenicos" class="result"></div>
-</section>
+  <div id="results" class="result-block"></div>
+</div>
 
 <script>
-// ====== Datos base ======
-const genesRecesivos = ["tremper","bell","rain","eclipse","blizzard","murphy"];
-const genesCodominantes = ["mack","superMack","giant"];
-const genesDominantes = ["enigma","wy","whiteYellow"];
-const poligenicos = ["mandarin","tangerine","blood","bloodInferno","bloodElectric","tornado"];
+// ==== CONFIGURACIÓN DE GENES ====
+const recesivos = ["Tremper","Bell","Rainwater","Eclipse","Blizzard","Murphy Patternless"];
+const codominantes = ["Mack Snow","Giant","Super Giant"];
+const dominantes = ["Enigma","White & Yellow"];
+const poligenicos = ["Mandarin","Tangerine","Blood","Blood Inferno","Blood Electric","Tornado"];
 
+// Combos predefinidos
 const combos = [
-  {name:"BEE", genes:["enigma","eclipse"]},
-  {name:"Black Hole", genes:["mack","enigma","eclipse"]},
-  {name:"Total Eclipse", genes:["superMack","eclipse"]},
-  {name:"Universe", genes:["superMack","eclipse","wy"]},
-  {name:"Banana Blizzard", genes:["murphy","blizzard"]},
-  {name:"Super Platinum", genes:["superMack","murphy"]},
-  {name:"Raptor", genes:["tremper","eclipse","murphy"]},
-  {name:"Aptor", genes:["tremper","murphy"]},
-  {name:"Ember", genes:["tremper","eclipse","murphy"]},
-  {name:"Snowflake", genes:["mack","tremper","eclipse","murphy"]},
-  {name:"Blazing Blizzard", genes:["blizzard"]},
-  {name:"Diablo Blanco", genes:["tremper","blizzard","eclipse"]},
-  {name:"Nova", genes:["tremper","eclipse","enigma"]},
-  {name:"Super Nova", genes:["superMack","tremper","eclipse","enigma"]},
-  {name:"Dreamsickle", genes:["mack","tremper","eclipse","enigma"]},
-  {name:"Radar", genes:["bell","eclipse"]},
-  {name:"Stealth", genes:["mack","enigma","bell","eclipse"]},
-  {name:"Super Stealth", genes:["superMack","radar","enigma"]},
-  {name:"White Knight", genes:["bell","eclipse","blizzard"]},
-  {name:"Typhoon", genes:["rain","eclipse"]},
-  {name:"Cyclone", genes:["rain","eclipse","murphy"]}
+  {name:"BEE", genes:["Enigma","Eclipse"]},
+  {name:"Black Hole", genes:["Mack Snow","Enigma","Eclipse"]},
+  {name:"Total Eclipse", genes:["Super Mack Snow","Eclipse"]},
+  {name:"Universe", genes:["Super Mack Snow","Eclipse","W/Y"]},
+  {name:"Bannana Blizzard", genes:["Murphy Patternless","Blizzard"]},
+  {name:"Super Platinum", genes:["Super Mack Snow","Murphy Patternless"]},
+  {name:"Raptor", genes:["Tremper","Eclipse","Murphy Patternless"]},
+  {name:"Aptor", genes:["Patternless Tremper","het Eclipse"]},
+  {name:"Ember", genes:["Tremper","Eclipse","Murphy Patternless"]},
+  {name:"Snowflake", genes:["Mack Snow","Tremper","Eclipse","Murphy Patternless"]},
+  {name:"Blazing Blizzard", genes:["Albino","Blizzard"]},
+  {name:"Diablo Blanco", genes:["Tremper","Blizzard","Eclipse"]},
+  {name:"Nova", genes:["Tremper","Eclipse","Enigma"]},
+  {name:"Super Nova", genes:["Super Mack Snow","Tremper","Eclipse","Enigma"]},
+  {name:"Dreamsickle", genes:["Mack Snow","Tremper","Eclipse","Enigma"]},
+  {name:"Radar", genes:["Bell","Eclipse"]},
+  {name:"Stealth", genes:["Super Snow","Enigma","Radar"]},
+  {name:"Super Stealth", genes:["Super Snow","Radar","Enigma"]},
+  {name:"White Knight", genes:["Bell","Eclipse","Blizzard"]},
+  {name:"Typhoon", genes:["Las Vegas","Eclipse"]},
+  {name:"Cyclone", genes:["Las Vegas","Eclipse","Patternless"]}
 ];
 
-const progenitores = [
-  {id:1, nombre:"Gecko1", genes:{tremper:"het",eclipse:"visual",mack:"presente",superMack:"",wy:"",giant:"",blizzard:"",murphy:"",bell:"",rain:"",enigma:"presente",whiteYellow:""}},
-  {id:2, nombre:"Gecko2", genes:{tremper:"",eclipse:"het",mack:"presente",superMack:"super",wy:"presente",giant:"giant",blizzard:"het",murphy:"het",bell:"",rain:"",enigma:"",whiteYellow:""}}  
-];
+// ==== FUNCIONES DE CÁLCULO ====
+function probabilidadGen(maleGen, femaleGen) {
+  const hets = ["het","visual"];
+  if(hets.includes(maleGen) && hets.includes(femaleGen)){
+    if(maleGen==="visual" && femaleGen==="visual") return 1;
+    if((maleGen==="visual" && femaleGen==="het") || (maleGen==="het" && femaleGen==="visual")) return 0.5;
+    if(maleGen==="het" && femaleGen==="het") return 0.25;
+  }
+  if((maleGen==="visual" && femaleGen==="") || (maleGen==="" && femaleGen==="visual")) return 1;
+  if((maleGen==="het" && femaleGen==="") || (maleGen==="" && femaleGen==="het")) return 0.5;
+  if(maleGen==="" && femaleGen==="") return 0;
 
-// ====== Llenar selects ======
-const padreSelect = document.getElementById("padre");
-const madreSelect = document.getElementById("madre");
-progenitores.forEach(p => {
-  padreSelect.innerHTML += `<option value="${p.id}">${p.nombre}</option>`;
-  madreSelect.innerHTML += `<option value="${p.id}">${p.nombre}</option>`;
-});
+  // Codominantes/Dominantes
+  if(maleGen==="super" || femaleGen==="super") return 1;
+  if(maleGen==="presente" && femaleGen==="") return 0.5;
+  if(maleGen==="" && femaleGen==="presente") return 0.5;
+  if(maleGen==="presente" && femaleGen==="presente") return 0.75;
 
-// ====== Funciones ======
-function getPorcentaje(gen, g1, g2){
-  g1 = g1||""; g2=g2||"";
-  if(genesRecesivos.includes(gen)){
-    if(g1==="visual" && g2==="visual") return {visual:100};
-    if((g1==="visual" && g2==="het")||(g1==="het" && g2==="visual")) return {visual:50,het:50};
-    if(g1==="het" && g2==="het") return {visual:25,het:50};
-    if((g1==="visual" && !g2)||(!g1 && g2==="visual")) return {het:100};
-    if((g1==="het" && !g2)||(!g1 && g2==="het")) return {het:50};
-  }
-  if(genesCodominantes.includes(gen)){
-    if((g1==="presente" && g2==="")||(g1==="" && g2==="presente")) return {presente:50};
-    if(g1==="presente" && g2==="presente") return {presente:50,super:25};
-    if((g1==="super" && g2==="")||(g1==="" && g2==="super")) return {presente:100};
-    if((g1==="super" && g2==="presente")||(g1==="presente" && g2==="super")) return {presente:50,super:50};
-    if(g1==="super" && g2==="super") return {super:100};
-  }
-  if(genesDominantes.includes(gen)){
-    if((g1==="presente" && g2==="")||(g1==="" && g2==="presente")) return {presente:50};
-    if(g1==="presente" && g2==="presente") return {presente:75};
-  }
-  return {};
+  return 0;
 }
 
-// Calcula porcentaje general de combo
-function porcentajeCombo(combo, padre, madre){
-  let total = combo.genes.length;
-  let suma = 0;
-  combo.genes.forEach(gen=>{
-    const porc = getPorcentaje(gen,padre.genes[gen],madre.genes[gen]);
-    if(Object.keys(porc).length>0){
-      // Tomamos el valor máximo de cada gen como aproximación
-      suma += Math.max(...Object.values(porc));
+// Función para calcular porcentaje de combo
+function porcentajeCombo(combo, maleGenes, femaleGenes){
+  let prob=1;
+  combo.genes.forEach(g=>{
+    const m=maleGenes[g] || "";
+    const f=femaleGenes[g] || "";
+    prob *= probabilidadGen(m,f);
+  });
+  return prob;
+}
+
+// ==== EVENTO CALCULO ====
+document.getElementById("female").addEventListener("change", calcular);
+document.getElementById("male").addEventListener("change", calcular);
+
+function calcular(){
+  const femaleVal = document.getElementById("female").value;
+  const maleVal = document.getElementById("male").value;
+  if(!femaleVal || !maleVal) return;
+
+  // Simulación simple de genes para ejemplo; aquí puedes expandir con valores reales
+  const femaleGenes = {};
+  const maleGenes = {};
+  [recesivos,codominantes,dominantes].flat().forEach(g=>{
+    femaleGenes[g]="het"; // ejemplo
+    maleGenes[g]="het";
+  });
+
+  let html="<h3>Combos posibles</h3>";
+  combos.forEach(c=>{
+    const p=porcentajeCombo(c,maleGenes,femaleGenes);
+    if(p>0){
+      html+=`<div class="combo">✅ ${c.name} (${c.genes.join(" + ")}) ≈ ${(p*100).toFixed(1)}%</div>`;
     }
   });
-  return Math.round(suma/total);
+
+  document.getElementById("results").innerHTML=html;
 }
-
-function mostrarResultados(){
-  const pId = parseInt(padreSelect.value);
-  const mId = parseInt(madreSelect.value);
-  if(!pId || !mId) return;
-  const padre = progenitores.find(p=>p.id===pId);
-  const madre = progenitores.find(p=>p.id===mId);
-
-  const resultadosDiv = document.getElementById("resultados");
-  const combosDiv = document.getElementById("combos");
-  const rutasDiv = document.getElementById("rutas");
-  const poligenicosDiv = document.getElementById("poligenicos");
-
-  resultadosDiv.innerHTML = combosDiv.innerHTML = rutasDiv.innerHTML = "";
-  poligenicosDiv.innerHTML = poligenicos.filter(g=>padre.genes[g]||madre.genes[g]).join(", ");
-
-  // Recesivos
-  genesRecesivos.forEach(g=>{
-    const porc = getPorcentaje(g,padre.genes[g],madre.genes[g]);
-    if(Object.keys(porc).length) resultadosDiv.innerHTML += `<div>${g}: ${Object.entries(porc).map(([k,v])=>v+"% "+k).join(", ")}</div>`;
-  });
-
-  // Codominantes
-  genesCodominantes.forEach(g=>{
-    const porc = getPorcentaje(g,padre.genes[g],madre.genes[g]);
-    if(Object.keys(porc).length) resultadosDiv.innerHTML += `<div>${g}: ${Object.entries(porc).map(([k,v])=>v+"% "+k).join(", ")}</div>`;
-  });
-
-  // Dominantes
-  genesDominantes.forEach(g=>{
-    const porc = getPorcentaje(g,padre.genes[g],madre.genes[g]);
-    if(Object.keys(porc).length) resultadosDiv.innerHTML += `<div>${g}: ${Object.entries(porc).map(([k,v])=>v+"% "+k).join(", ")}</div>`;
-  });
-
-  // Combos logrados
-  combos.forEach(c=>{
-    const porcCombo = porcentajeCombo(c,padre,madre);
-    const tiene = porcCombo > 0;
-    if(tiene) combosDiv.innerHTML += `<div class="combo">✅ ${c.name} (${c.genes.join(" + ")}) ${porcCombo}%</div>`;
-  });
-
-  // Rutas a combos
-  combos.forEach(c=>{
-    let faltan = [], presentes=[];
-    c.genes.forEach(gen=>{
-      const porc = getPorcentaje(gen,padre.genes[gen],madre.genes[gen]);
-      if(Object.keys(porc).length>0) presentes.push(gen);
-      else faltan.push(gen);
-    });
-    if(faltan.length>0 && presentes.length>0){
-      rutasDiv.innerHTML += `<div class="combo">Ruta a ${c.name}: falta (${faltan.join(", ")}) | presentes (${presentes.join(", ")})</div>`;
-    }
-  });
-}
-
-padreSelect.addEventListener("change", mostrarResultados);
-madreSelect.addEventListener("change", mostrarResultados);
 </script>
+
 </body>
 </html>
