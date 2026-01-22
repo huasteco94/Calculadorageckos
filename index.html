@@ -5,138 +5,115 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calculadora Genética Gecko Leopardo</title>
 <style>
-body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
-h2 { margin-top: 20px; }
-select, button { margin: 5px; padding: 5px; }
-.result-block { background: #fff; padding: 15px; margin: 10px 0; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1);}
-.combo { margin-left: 15px; }
-.percentage { font-weight: bold; }
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  select { margin: 5px; }
+  h2 { margin-top: 20px; }
+  .resultado { border: 1px solid #ccc; padding: 10px; min-height: 20px; margin-bottom: 10px; }
 </style>
 </head>
 <body>
 
 <h1>Calculadora Genética Gecko Leopardo</h1>
 
-<div>
-  <h2>Selecciona los progenitores</h2>
-  <div>
-    <label>Hembra:</label>
-    <select id="female">
-      <option value="">--Selecciona--</option>
-      <option value="tremper">Tremper Albino</option>
-      <option value="bell">Bell Albino</option>
-      <option value="rainwater">Rainwater Albino</option>
-      <option value="nl">Normal / No Albino</option>
-    </select>
-  </div>
-  <div>
-    <label>Macho:</label>
-    <select id="male">
-      <option value="">--Selecciona--</option>
-      <option value="tremper">Tremper Albino</option>
-      <option value="bell">Bell Albino</option>
-      <option value="rainwater">Rainwater Albino</option>
-      <option value="nl">Normal / No Albino</option>
-    </select>
-  </div>
-</div>
+<h2>Selecciona los progenitores</h2>
+<label>Hembra:
+<select id="hembra">
+  <option value="">--Selecciona--</option>
+</select>
+</label>
+<label>Macho:
+<select id="macho">
+  <option value="">--Selecciona--</option>
+</select>
+</label>
 
-<div>
-  <h2>Resultados Genéticos</h2>
-  <div id="results" class="result-block"></div>
-</div>
+<h2>Resultados Genéticos</h2>
+<div id="resultados" class="resultado"></div>
+
+<h2>Combos logrados</h2>
+<div id="combos" class="resultado"></div>
+
+<h2>Rutas a combos</h2>
+<div id="rutas" class="resultado"></div>
+
+<h2>Líneas poligénicas</h2>
+<div id="poligenicos" class="resultado"></div>
 
 <script>
-// ==== CONFIGURACIÓN DE GENES ====
-const recesivos = ["Tremper","Bell","Rainwater","Eclipse","Blizzard","Murphy Patternless"];
-const codominantes = ["Mack Snow","Giant","Super Giant"];
-const dominantes = ["Enigma","White & Yellow"];
-const poligenicos = ["Mandarin","Tangerine","Blood","Blood Inferno","Blood Electric","Tornado"];
-
-// Combos predefinidos
-const combos = [
-  {name:"BEE", genes:["Enigma","Eclipse"]},
-  {name:"Black Hole", genes:["Mack Snow","Enigma","Eclipse"]},
-  {name:"Total Eclipse", genes:["Super Mack Snow","Eclipse"]},
-  {name:"Universe", genes:["Super Mack Snow","Eclipse","W/Y"]},
-  {name:"Bannana Blizzard", genes:["Murphy Patternless","Blizzard"]},
-  {name:"Super Platinum", genes:["Super Mack Snow","Murphy Patternless"]},
-  {name:"Raptor", genes:["Tremper","Eclipse","Murphy Patternless"]},
-  {name:"Aptor", genes:["Patternless Tremper","het Eclipse"]},
-  {name:"Ember", genes:["Tremper","Eclipse","Murphy Patternless"]},
-  {name:"Snowflake", genes:["Mack Snow","Tremper","Eclipse","Murphy Patternless"]},
-  {name:"Blazing Blizzard", genes:["Albino","Blizzard"]},
-  {name:"Diablo Blanco", genes:["Tremper","Blizzard","Eclipse"]},
-  {name:"Nova", genes:["Tremper","Eclipse","Enigma"]},
-  {name:"Super Nova", genes:["Super Mack Snow","Tremper","Eclipse","Enigma"]},
-  {name:"Dreamsickle", genes:["Mack Snow","Tremper","Eclipse","Enigma"]},
-  {name:"Radar", genes:["Bell","Eclipse"]},
-  {name:"Stealth", genes:["Super Snow","Enigma","Radar"]},
-  {name:"Super Stealth", genes:["Super Snow","Radar","Enigma"]},
-  {name:"White Knight", genes:["Bell","Eclipse","Blizzard"]},
-  {name:"Typhoon", genes:["Las Vegas","Eclipse"]},
-  {name:"Cyclone", genes:["Las Vegas","Eclipse","Patternless"]}
+const progenitores = [
+  { nombre: "Ejemplo1", linea: "Tremper", genes: { tremper: "visual", eclipse: "het", blizzard: "", patternless: "" } },
+  { nombre: "Ejemplo2", linea: "Bell", genes: { bell: "visual", eclipse: "", blizzard: "", patternless: "" } },
+  { nombre: "Ejemplo3", linea: "Rainwater", genes: { rainwater: "het", eclipse: "", blizzard: "", patternless: "" } }
 ];
 
-// ==== FUNCIONES DE CÁLCULO ====
-function probabilidadGen(maleGen, femaleGen) {
-  const hets = ["het","visual"];
-  if(hets.includes(maleGen) && hets.includes(femaleGen)){
-    if(maleGen==="visual" && femaleGen==="visual") return 1;
-    if((maleGen==="visual" && femaleGen==="het") || (maleGen==="het" && femaleGen==="visual")) return 0.5;
-    if(maleGen==="het" && femaleGen==="het") return 0.25;
+// Combos definidos
+const combosDefinidos = [
+  { nombre: "Raptor", linea: "Tremper", genes: ["tremper","eclipse"] },
+  { nombre: "Universe", linea: "Tremper", genes: ["superMack","eclipse","wy"] },
+  { nombre: "Diablo Blanco", linea: "Tremper", genes: ["tremper","blizzard","eclipse"] },
+  { nombre: "Nova", linea: "Tremper", genes: ["tremper","eclipse","enigma"] },
+  { nombre: "Typhoon", linea: "Rainwater", genes: ["rainwater","eclipse"] },
+  { nombre: "Radar", linea: "Bell", genes: ["bell","eclipse"] },
+  // Agrega todos los combos que ya definimos antes
+];
+
+// Inicializar selects
+const hembraSelect = document.getElementById("hembra");
+const machoSelect = document.getElementById("macho");
+progenitores.forEach(p => {
+  hembraSelect.innerHTML += `<option value="${p.nombre}">${p.nombre} (${p.linea})</option>`;
+  machoSelect.innerHTML += `<option value="${p.nombre}">${p.nombre} (${p.linea})</option>`;
+});
+
+function calcular() {
+  const hembra = progenitores.find(p => p.nombre === hembraSelect.value);
+  const macho = progenitores.find(p => p.nombre === machoSelect.value);
+
+  if (!hembra || !macho) {
+    document.getElementById("resultados").innerText = "";
+    document.getElementById("combos").innerText = "";
+    document.getElementById("rutas").innerText = "";
+    document.getElementById("poligenicos").innerText = "";
+    return;
   }
-  if((maleGen==="visual" && femaleGen==="") || (maleGen==="" && femaleGen==="visual")) return 1;
-  if((maleGen==="het" && femaleGen==="") || (maleGen==="" && femaleGen==="het")) return 0.5;
-  if(maleGen==="" && femaleGen==="") return 0;
 
-  // Codominantes/Dominantes
-  if(maleGen==="super" || femaleGen==="super") return 1;
-  if(maleGen==="presente" && femaleGen==="") return 0.5;
-  if(maleGen==="" && femaleGen==="presente") return 0.5;
-  if(maleGen==="presente" && femaleGen==="presente") return 0.75;
+  // Resultados genéticos
+  let resultadosText = "";
+  let combosText = "";
+  let rutasText = "";
+  let poligenicosText = "Mandarin, Tangerine, Blood, Blood Inferno, Blood Electric, Tornado (informativo)";
 
-  return 0;
-}
+  // Calcular recesivos, codominantes, dominantes
+  const genes = { ...hembra.genes, ...macho.genes };
+  resultadosText = JSON.stringify(genes, null, 2);
 
-// Función para calcular porcentaje de combo
-function porcentajeCombo(combo, maleGenes, femaleGenes){
-  let prob=1;
-  combo.genes.forEach(g=>{
-    const m=maleGenes[g] || "";
-    const f=femaleGenes[g] || "";
-    prob *= probabilidadGen(m,f);
-  });
-  return prob;
-}
-
-// ==== EVENTO CALCULO ====
-document.getElementById("female").addEventListener("change", calcular);
-document.getElementById("male").addEventListener("change", calcular);
-
-function calcular(){
-  const femaleVal = document.getElementById("female").value;
-  const maleVal = document.getElementById("male").value;
-  if(!femaleVal || !maleVal) return;
-
-  // Simulación simple de genes para ejemplo; aquí puedes expandir con valores reales
-  const femaleGenes = {};
-  const maleGenes = {};
-  [recesivos,codominantes,dominantes].flat().forEach(g=>{
-    femaleGenes[g]="het"; // ejemplo
-    maleGenes[g]="het";
-  });
-
-  let html="<h3>Combos posibles</h3>";
-  combos.forEach(c=>{
-    const p=porcentajeCombo(c,maleGenes,femaleGenes);
-    if(p>0){
-      html+=`<div class="combo">✅ ${c.name} (${c.genes.join(" + ")}) ≈ ${(p*100).toFixed(1)}%</div>`;
+  // Evaluar combos
+  combosDefinidos.forEach(c => {
+    if (c.linea === hembra.linea && c.linea === macho.linea) {
+      let tiene = 0;
+      c.genes.forEach(g => {
+        if (genes[g] && genes[g] !== "") tiene++;
+      });
+      if (tiene > 0) {
+        const porcentaje = ((tiene / c.genes.length) * 100).toFixed(1);
+        combosText += `${c.nombre} ≈ ${porcentaje}%\n`;
+        // Generar ruta si no tiene todos
+        if (tiene < c.genes.length) {
+          const faltantes = c.genes.filter(g => !genes[g] || genes[g] === "").join(", ");
+          rutasText += `${c.nombre} (faltan: ${faltantes}) [Genes del combo: ${c.genes.join(", ")}]\n`;
+        }
+      }
     }
   });
 
-  document.getElementById("results").innerHTML=html;
+  document.getElementById("resultados").innerText = resultadosText;
+  document.getElementById("combos").innerText = combosText || "Ningún combo logrado";
+  document.getElementById("rutas").innerText = rutasText || "Ninguna ruta disponible";
+  document.getElementById("poligenicos").innerText = poligenicosText;
 }
+
+hembraSelect.addEventListener("change", calcular);
+machoSelect.addEventListener("change", calcular);
 </script>
 
 </body>
