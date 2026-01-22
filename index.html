@@ -1,120 +1,120 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculadora Genética Gecko Leopardo</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Calculadora Genética Gecko Leopardo — Combos</title>
 <style>
-  body { font-family: Arial, sans-serif; margin: 20px; }
-  h2 { margin-top: 20px; }
-  select { margin: 3px; }
-  .resultado, .combo-logrado, .ruta-combo, .poligenico { padding: 10px; margin-top: 10px; border-radius: 5px; }
-  .combo-logrado { background-color: #d4edda; }
-  .ruta-combo { background-color: #fff3cd; }
-  .poligenico { background-color: #e2e3e5; }
+  body { font-family: Arial, sans-serif; margin: 20px; background:#fafafa; }
+  h1{margin-bottom:8px;}
+  label {display:block; margin:10px 0 6px;}
+  select {margin-right:8px; padding:6px;}
+  button {margin-top:12px; padding:8px 12px;}
+  .combo-logrado { background-color: #d4edda; padding:12px; margin:10px 0; border-radius:6px; }
+  .empty { color:#666; padding:12px; background:#fff; border-radius:6px; border:1px solid #eee; }
+  /* ocultamos todo lo demás por petición del usuario */
+  #otras-secciones { display:none; }
 </style>
 </head>
 <body>
+
 <h1>Calculadora Genética – Gecko Leopardo</h1>
+<p>Selecciona padre/madre por cada gen. (La vista muestra sólo los <strong>Combos logrados</strong>.)</p>
 
-<h2>Selección de Ejemplares</h2>
-<p>Selecciona Padre y Madre para cada gen</p>
+<!-- Inputs (se mantienen todos, pero sólo mostramos combos después) -->
+<div id="inputs">
+  <h3>Genes Recesivos</h3>
+  <label>Tremper Albino:
+    <select id="tremperPadre"><option value=""></option><option value="het">Het</option><option value="visual">Visual</option></select>
+    <select id="tremperMadre"><option value=""></option><option value="het">Het</option><option value="visual">Visual</option></select>
+  </label>
 
-<!-- RECESIVOS -->
-<h2>Genes Recesivos</h2>
-<div>
-  Tremper Albino: 
-  <select id="tremperPadre"><option value=""></option><option value="het">Het</option><option value="visual">Visual</option></select>
-  <select id="tremperMadre"><option value=""></option><option value="het">Het</option><option value="visual">Visual</option></select><br>
+  <label>Bell Albino:
+    <select id="bellPadre"><option value=""></option><option value="het">Het</option><option value="visual">Visual</option></select>
+    <select id="bellMadre"><option value=""></option><option value="het">Het</option><option value="visual">Visual</option></select>
+  </label>
 
-  Bell Albino: 
-  <select id="bellPadre"><option value=""></option><option value="het">Het</option><option value="visual">Visual</option></select>
-  <select id="bellMadre"><option value=""></option><option value="het">Het</option><option value="visual">Visual</option></select><br>
+  <label>Rainwater Albino:
+    <select id="rainPadre"><option value=""></option><option value="het">Het</option><option value="visual">Visual</option></select>
+    <select id="rainMadre"><option value=""></option><option value="het">Het</option><option value="visual">Visual</option></select>
+  </label>
 
-  Rainwater Albino: 
-  <select id="rainPadre"><option value=""></option><option value="het">Het</option><option value="visual">Visual</option></select>
-  <select id="rainMadre"><option value=""></option><option value="het">Het</option><option value="visual">Visual</option></select><br>
+  <label>Eclipse:
+    <select id="eclipsePadre"><option value=""></option><option value="het">Het</option><option value="visual">Visual</option></select>
+    <select id="eclipseMadre"><option value=""></option><option value="het">Het</option><option value="visual">Visual</option></select>
+  </label>
 
-  Eclipse: 
-  <select id="eclipsePadre"><option value=""></option><option value="het">Het</option><option value="visual">Visual</option></select>
-  <select id="eclipseMadre"><option value=""></option><option value="het">Het</option><option value="visual">Visual</option></select>
+  <h3>Co-dominantes</h3>
+  <label>Blizzard:
+    <select id="blizzardPadre"><option value=""></option><option value="presente">Presente</option></select>
+    <select id="blizzardMadre"><option value=""></option><option value="presente">Presente</option></select>
+  </label>
+
+  <label>Murphy Patternless:
+    <select id="murphyPadre"><option value=""></option><option value="presente">Presente</option></select>
+    <select id="murphyMadre"><option value=""></option><option value="presente">Presente</option></select>
+  </label>
+
+  <label>Mack Snow:
+    <select id="mackPadre"><option value=""></option><option value="presente">Presente</option></select>
+    <select id="mackMadre"><option value=""></option><option value="presente">Presente</option></select>
+  </label>
+
+  <label>Super Mack Snow:
+    <select id="superMackPadre"><option value=""></option><option value="presente">Presente</option></select>
+    <select id="superMackMadre"><option value=""></option><option value="presente">Presente</option></select>
+  </label>
+
+  <label>Giant:
+    <select id="giantPadre"><option value=""></option><option value="presente">Giant</option></select>
+    <select id="giantMadre"><option value=""></option><option value="presente">Giant</option></select>
+  </label>
+
+  <label>Super Giant:
+    <select id="superGiantPadre"><option value=""></option><option value="presente">Super Giant</option></select>
+    <select id="superGiantMadre"><option value=""></option><option value="presente">Super Giant</option></select>
+  </label>
+
+  <h3>Dominantes</h3>
+  <label>Enigma:
+    <select id="enigmaPadre"><option value=""></option><option value="presente">Presente</option></select>
+    <select id="enigmaMadre"><option value=""></option><option value="presente">Presente</option></select>
+  </label>
+
+  <label>White & Yellow:
+    <select id="wyPadre"><option value=""></option><option value="presente">Presente</option></select>
+    <select id="wyMadre"><option value=""></option><option value="presente">Presente</option></select>
+  </label>
+
+  <div style="margin-top:10px;">
+    <button id="btnCalcular">Calcular combos</button>
+  </div>
 </div>
 
-<!-- CODOMINANTES -->
-<h2>Genes Co-dominantes</h2>
-<div>
-  Blizzard: <select id="blizzardPadre"><option value=""></option><option value="presente">Presente</option></select>
-  <select id="blizzardMadre"><option value=""></option><option value="presente">Presente</option></select><br>
-
-  Murphy Patternless: <select id="murphyPadre"><option value=""></option><option value="presente">Presente</option></select>
-  <select id="murphyMadre"><option value=""></option><option value="presente">Presente</option></select><br>
-
-  Mack Snow: <select id="mackPadre"><option value=""></option><option value="presente">Presente</option></select>
-  <select id="mackMadre"><option value=""></option><option value="presente">Presente</option></select><br>
-
-  Super Mack Snow: <select id="superMackPadre"><option value=""></option><option value="presente">Presente</option></select>
-  <select id="superMackMadre"><option value=""></option><option value="presente">Presente</option></select><br>
-
-  Giant: <select id="giantPadre"><option value=""></option><option value="presente">Giant</option></select>
-  <select id="giantMadre"><option value=""></option><option value="presente">Giant</option></select><br>
-
-  Super Giant: <select id="superGiantPadre"><option value=""></option><option value="presente">Super Giant</option></select>
-  <select id="superGiantMadre"><option value=""></option><option value="presente">Super Giant</option></select><br>
+<!-- SOLO MOSTRAMOS ESTA SECCIÓN -->
+<h2>Combos logrados</h2>
+<div id="combosContainer">
+  <div class="empty">Presiona "Calcular combos" para ver combos con probabilidad &gt; 1%</div>
 </div>
-
-<!-- DOMINANTES -->
-<h2>Genes Dominantes</h2>
-<div>
-  Enigma: <select id="enigmaPadre"><option value=""></option><option value="presente">Presente</option></select>
-  <select id="enigmaMadre"><option value=""></option><option value="presente">Presente</option></select><br>
-
-  White & Yellow: <select id="wyPadre"><option value=""></option><option value="presente">Presente</option></select>
-  <select id="wyMadre"><option value=""></option><option value="presente">Presente</option></select><br>
-</div>
-
-<!-- POLIGÉNICOS INFORMATIVOS -->
-<h2>Genes Poligénicos (solo información)</h2>
-<div>
-  Mandarin/Tangerine: <select id="mandarinPadre"><option value=""></option><option value="presente">Presente</option></select>
-  <select id="mandarinMadre"><option value=""></option><option value="presente">Presente</option></select><br>
-
-  Blood: <select id="bloodPadre"><option value=""></option><option value="presente">Presente</option></select>
-  <select id="bloodMadre"><option value=""></option><option value="presente">Presente</option></select><br>
-
-  Blood Inferno: <select id="bloodInfPadre"><option value=""></option><option value="presente">Presente</option></select>
-  <select id="bloodInfMadre"><option value=""></option><option value="presente">Presente</option></select><br>
-
-  Blood Electric: <select id="bloodElecPadre"><option value=""></option><option value="presente">Presente</option></select>
-  <select id="bloodElecMadre"><option value=""></option><option value="presente">Presente</option></select><br>
-
-  Tornado: <select id="tornadoPadre"><option value=""></option><option value="presente">Presente</option></select>
-  <select id="tornadoMadre"><option value=""></option><option value="presente">Presente</option></select><br>
-</div>
-
-<button onclick="calcularCruce()">Calcular Cruce</button>
-
-<h2>Resultados</h2>
-<div id="resultados"></div>
 
 <script>
 /* --- Helpers: probabilidades de gameto --- */
-// Para genes recesivos: probabilidad de que el gameto lleve el alelo recesivo (a)
 function probGametoRecesivo(parentState){
-  if(parentState === 'visual') return 1.0; // aa -> siempre a
-  if(parentState === 'het') return 0.5;    // Aa -> 50% a
-  return 0.0;                              // AA o vacío -> 0% a
+  if(parentState === 'visual') return 1.0;
+  if(parentState === 'het') return 0.5;
+  return 0.0;
 }
-
-// Para alelo "M" en codominantes/dominantes: probabilidad gameto lleve alelo
 function probGametoAlelo(parentState){
-  if(parentState === 'super') return 1.0;  // homozygous
-  if(parentState === 'presente') return 0.5; // heterozygous
+  if(parentState === 'super') return 1.0;
+  if(parentState === 'presente') return 0.5;
   return 0.0;
 }
 
-/* --- Función principal --- */
-function calcularCruce() {
-  const genes = {
+/* --- Lógica de cálculo (basada en tu código) --- */
+document.getElementById('btnCalcular').addEventListener('click', calcularCombos);
+
+function leerGenesDeInputs(){
+  return {
     tremper: [document.getElementById('tremperPadre').value, document.getElementById('tremperMadre').value],
     bell: [document.getElementById('bellPadre').value, document.getElementById('bellMadre').value],
     rain: [document.getElementById('rainPadre').value, document.getElementById('rainMadre').value],
@@ -126,55 +126,14 @@ function calcularCruce() {
     giant: [document.getElementById('giantPadre').value, document.getElementById('giantMadre').value],
     superGiant: [document.getElementById('superGiantPadre').value, document.getElementById('superGiantMadre').value],
     enigma: [document.getElementById('enigmaPadre').value, document.getElementById('enigmaMadre').value],
-    wy: [document.getElementById('wyPadre').value, document.getElementById('wyMadre').value],
-    mandarin: [document.getElementById('mandarinPadre').value, document.getElementById('mandarinMadre').value],
-    blood: [document.getElementById('bloodPadre').value, document.getElementById('bloodMadre').value],
-    bloodInf: [document.getElementById('bloodInfPadre').value, document.getElementById('bloodInfMadre').value],
-    bloodElec: [document.getElementById('bloodElecPadre').value, document.getElementById('bloodElecMadre').value],
-    tornado: [document.getElementById('tornadoPadre').value, document.getElementById('tornadoMadre').value]
+    wy: [document.getElementById('wyPadre').value, document.getElementById('wyMadre').value]
   };
+}
 
-  let resultadosHTML = '<h3>Resumen del Cruce</h3>';
+function calcularCombos(){
+  const genes = leerGenesDeInputs();
 
-  // === Resultados Recesivos ===
-  resultadosHTML += '<h3>Resultados Genéticos</h3>';
-  resultadosHTML += '<h4>Recesivos</h4>';
-  for (const key of ['tremper','bell','rain','eclipse']) {
-    const valores = genes[key].filter(v => v!=="");
-    if (valores.length > 0) {
-      let het = valores.filter(v=>'het'===v).length;
-      let visual = valores.filter(v=>'visual'===v).length;
-      let partes = [];
-      if (visual) partes.push('Visual '+(visual*50)+'%');
-      if (het) partes.push('Het '+(het*50)+'%');
-      resultadosHTML += `<p>${key.charAt(0).toUpperCase()+key.slice(1)} Albino: ${partes.join(', ')}</p>`;
-    }
-  }
-
-  // === Co-dominantes ===
-  resultadosHTML += '<h4>Co-dominantes</h4>';
-  for (const key of ['blizzard','murphy','mack','superMack','giant','superGiant']) {
-    const valores = genes[key].filter(v => v!=="");
-    if (valores.length>0) {
-      resultadosHTML += `<p>${key.charAt(0).toUpperCase()+key.slice(1)}: Presente</p>`;
-    }
-  }
-
-  // === Dominantes ===
-  resultadosHTML += '<h4>Dominantes</h4>';
-  for (const key of ['enigma','wy']) {
-    const valores = genes[key].filter(v => v!=="");
-    if (valores.length>0) {
-      resultadosHTML += `<p>${key.charAt(0).toUpperCase()+key.slice(1)}: Presente</p>`;
-    }
-  }
-
-  // === Combos logrados y rutas ===
-  resultadosHTML += '<h3>Combos logrados</h3>';
-  let combosLogrados = [];
-  let rutasHTML = '';
-
-  // Lista de combos con genes necesarios y línea
+  // combos (misma lista que usas)
   const combos = [
     {name:'BEE',genes:['enigma','eclipse'],linea:'tremper'},
     {name:'Black Hole',genes:['mack','enigma','eclipse'],linea:'tremper'},
@@ -199,85 +158,84 @@ function calcularCruce() {
     {name:'Cyclone',genes:['rain','eclipse','murphy'],linea:'rain'}
   ];
 
-  // Determinar línea del ejemplar
+  // Determinar la línea (si hay más de una línea presente, priorizamos en orden tremper,bell,rain según detecte)
   let linea = '';
   if (genes.tremper.includes('visual') || genes.tremper.includes('het')) linea='tremper';
   else if (genes.bell.includes('visual') || genes.bell.includes('het')) linea='bell';
   else if (genes.rain.includes('visual') || genes.rain.includes('het')) linea='rain';
 
-  combos.forEach(c=>{
-    if (c.linea===linea) {
-      // Detectar presentes para rutas (mantener lógica previa)
-      let presentes = c.genes.filter(g => {
-        const val = genes[g];
-        if(!val) return false;
-        return val.includes('visual') || val.includes('presente') || val.includes('het');
-      });
+  const combosLogrados = [];
 
-      // --- CÁLCULO EXACTO DE PROBABILIDAD DEL COMBO ---
-      // Para cada gen del combo calculamos la probabilidad de que el descendiente cumpla
-      // el requisito del combo (visual, super, o presente). Luego multiplicamos.
-      let probCombo = 1;
-      let anyNonZero = false;
+  combos.forEach(c => {
+    if (c.linea !== linea) return; // no mezclar líneas
+    // calculamos probabilidad del combo multiplicando probabilidades por gen
+    let probCombo = 1;
+    let anyNonZero = false;
 
-      c.genes.forEach(g => {
-        const vals = genes[g] || ["",""];
-        const pFather = vals[0] || "";
-        const pMother = vals[1] || "";
-        let pGene = 0;
+    c.genes.forEach(g => {
+      const vals = genes[g] || ["",""];
+      const pFatherState = vals[0] || "";
+      const pMotherState = vals[1] || "";
+      let pGene = 0;
 
-        // Recesivos (necesitan fenotipo *visual* = aa)
-        if (['tremper','bell','rain','eclipse'].includes(g)) {
-          const pa = probGametoRecesivo(pFather); // prob. gameto con alelo recesivo del padre
-          const pb = probGametoRecesivo(pMother);
-          pGene = pa * pb; // prob. de aa en descendencia
-        }
-        // Codominantes: Mack / Super Mack / Murphy / Blizzard / Giant
-        else if (['mack','superMack','murphy','blizzard','giant','superGiant'].includes(g)) {
-          const pm = probGametoAlelo(pFather); // prob. gameto con alelo M del padre
-          const pn = probGametoAlelo(pMother);
-          if (g === 'superMack' || g === 'superGiant') {
-            // Necesitamos fenotipo SUPER (homozygous) -> P = P1(M) * P2(M)
-            pGene = pm * pn;
-          } else {
-            // Fenotipo "presente" (al menos un alelo) -> 1 - P(no alelos)
-            pGene = 1 - (1 - pm) * (1 - pn);
-          }
-        }
-        // Dominantes / poligénicos tratados como "presente" (si tienen alelo)
-        else {
-          const pd1 = probGametoAlelo(pFather);
-          const pd2 = probGametoAlelo(pMother);
-          pGene = 1 - (1 - pd1) * (1 - pd2);
-        }
-
-        if (pGene > 0) anyNonZero = true;
-        probCombo *= pGene;
-      });
-
-      // Si la probabilidad total del combo > 1% la mostramos
-      if (probCombo * 100 > 1) {
-        combosLogrados.push(`<div class="combo-logrado">✅ ${c.name} (${c.genes.join(' + ')}) ≈ ${(probCombo*100).toFixed(1)}%</div>`);
-      } else if (presentes.length>0) {
-        // Si no alcanza >1% mostramos ruta (como antes), para orientar caminos
-        let faltantes = c.genes.filter(g=>!presentes.includes(g));
-        rutasHTML += `<div class="ruta-combo">➜ Ruta a ${c.name}: Falta ${faltantes.join(', ')} (${c.genes.join(' + ')})</div>`;
+      // recesivos: necesitamos aa (visual)
+      if (['tremper','bell','rain','eclipse'].includes(g)) {
+        const pa = probGametoRecesivo(pFatherState);
+        const pb = probGametoRecesivo(pMotherState);
+        pGene = pa * pb; // prob aa
       }
+      // codominantes: super (homo) o "presente" (al menos un alelo)
+      else if (['superMack','superGiant'].includes(g)) {
+        // para "super" se requiere que ambos gametos lleven el alelo (homozygous)
+        const pa = probGametoAlelo(pFatherState);
+        const pb = probGametoAlelo(pMotherState);
+        pGene = pa * pb;
+      }
+      else if (['mack','murphy','blizzard','giant'].includes(g)) {
+        // prob de "presente" (al menos un alelo en cría)
+        const pa = probGametoAlelo(pFatherState);
+        const pb = probGametoAlelo(pMotherState);
+        pGene = 1 - (1 - pa) * (1 - pb);
+      }
+      // dominantes / wy / enigma
+      else if (['enigma','wy'].includes(g)) {
+        const pa = probGametoAlelo(pFatherState);
+        const pb = probGametoAlelo(pMotherState);
+        pGene = 1 - (1 - pa) * (1 - pb);
+      }
+      else {
+        // fallback: tratar como "presente"
+        const pa = probGametoAlelo(pFatherState);
+        const pb = probGametoAlelo(pMotherState);
+        pGene = 1 - (1 - pa) * (1 - pb);
+      }
+
+      if (pGene > 0) anyNonZero = true;
+      probCombo *= pGene;
+    });
+
+    // solo mostrar combos con prob > 1%
+    if (probCombo * 100 > 1) {
+      combosLogrados.push({name:c.name, genes:c.genes, prob: probCombo});
     }
   });
 
-  resultadosHTML += combosLogrados.join('') + rutasHTML;
+  // renderizar sólo combos logrados
+  const cont = document.getElementById('combosContainer');
+  cont.innerHTML = '';
 
-  // === Poligénicos Informativos ===
-  resultadosHTML += '<h3>Líneas poligénicas (informativas)</h3>';
-  for (const key of ['mandarin','blood','bloodInf','bloodElec','tornado']) {
-    const valores = genes[key].filter(v => v!=="");
-    if (valores.length>0) {
-      resultadosHTML += `<div class="poligenico">${key.charAt(0).toUpperCase()+key.slice(1)}: Presente</div>`;
-    }
+  if (combosLogrados.length === 0) {
+    cont.innerHTML = '<div class="empty">No hay combos con probabilidad > 1% para la configuración actual.</div>';
+    return;
   }
 
-  document.getElementById('resultados').innerHTML = resultadosHTML;
+  // ordenar por probabilidad descendente (opcional, ayuda a ver lo más probable)
+  combosLogrados.sort((a,b) => b.prob - a.prob);
+
+  combosLogrados.forEach(c => {
+    const html = `<div class="combo-logrado">✅ ${c.name} (${c.genes.join(' + ')}) ≈ ${(c.prob*100).toFixed(1)}%</div>`;
+    cont.insertAdjacentHTML('beforeend', html);
+  });
 }
 </script>
 </body>
